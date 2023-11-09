@@ -13,3 +13,14 @@ vector<int> prefix_function(string& s) {
     }
     return pf;
 }
+int main() {
+    string s;
+    cin >> s;
+    vector<int> pf = prefix_function(s);
+    for (int i = 0; i < pf.size(); i++) {
+        cout << pf[i] << " ";
+    }
+    cout << endl;
+    return 0;
+    for(int t=0;
+}
