@@ -1,0 +1,2 @@
+"C:\w64devkit\bin\gdb.exe" !.exe
+"C:\w64devkit\bin\g++.exe" -g !.cpp -o !.exe
