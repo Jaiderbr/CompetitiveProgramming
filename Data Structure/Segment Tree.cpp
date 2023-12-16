@@ -39,7 +39,7 @@ struct STree {
         else upd(v * 2 + 1, tm + 1, tr, pos, val);
         st[v] = oper(st[v * 2], st[v * 2 + 1]);
     }
-
+    // Cantidad de elementos > >= < <= a x en el rango [l,r]
     int countQuery(int v, int tl, int tr, int l, int r, T x) {
         if (tl > r || tr < l) return 0;
         if (l <= tl && tr <= r) {
@@ -57,9 +57,7 @@ struct STree {
         int tm = (tl + tr) / 2;
         return countQuery(v * 2, tl, tm, l, r, x) + countQuery(v * 2 + 1, tm + 1, tr, l, r, x);
     }
-    int countQuery(int a, int b, T x) {
-        return countQuery(1, 0, n - 1, a, b, x);
-    }
+    int countQuery(int l, int r, T x) { return countQuery(1, 0, n - 1, l, r, x); }
     void upd(int pos, T val) { upd(1, 0, n - 1, pos, val); }
     T query(int l, int r) { return query(1, 0, n - 1, l, r); }
 };
