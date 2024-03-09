@@ -1,2 +1,9 @@
 "C:\w64devkit\bin\gdb.exe" !.exe
 "C:\w64devkit\bin\g++.exe" -g !.cpp -o !.exe
+
+g++ -o A A.cpp
+./A
+
+A < in.txt
+A < in.txt > op.txt
+
