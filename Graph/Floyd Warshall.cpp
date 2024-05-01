@@ -6,7 +6,7 @@ struct FloydW {
     FloydW(int N) {
         this->n = N;
         g.resize(N, vector<T>(N, INF));
-        forn(i, N) forn(j, N) if (i == j) g[i][j] = 0;
+        forn(i, N) g[i][i] = 0;
     }
     void addEdge(int u, int v, T w, int uno) {
         u -= uno; v -= uno;
