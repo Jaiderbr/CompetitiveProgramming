@@ -1,38 +1,3 @@
-string manacher(const string& s) {
-    if (sz(s) == 0) return "";
-
-    string curr = "";
-    for (auto&& i : s) {
-        curr += i;
-        curr += "#";
-    }
-
-    curr = "@#" + curr + "&";
-    vector<ll> pali(sz(curr), 0);
-    ll center = 0;
-    ll R = 0;
-    for (ll i = 1; i < sz(curr) - 1; i++) {
-        if (i < R) pali[i] = min(pali[2 * center - i], R - i);
-        while (curr[i + (pali[i] + 1)] == curr[i - (pali[i] + 1)]) pali[i]++;
-        if (i + pali[i] > R) {
-            center = i;
-            R = i + pali[i];
-        }
-    }
-    ll HC = 0, CI = 0;
-    for (ll i = 1; i < sz(curr) - 1; i++) {
-        if (pali[i] > HC) {
-            HC = pali[i];
-            CI = i;
-        }
-    }
-    string ans = "";
-    if (HC <= 0) return string(1, s[0]);
-    for (ll i = CI - HC + 1; i <= CI + HC - 1; i += 2) ans += curr[i];
-    return ans;
-}
-
-
 // manacher receives a vector of T and returns the vector with the size of the palindromes
 // ret[2*i] = size of the largest palindrome centered at i
 // ret[2*i+1] = size of the largest palindrome centered at i and i+1
@@ -84,4 +49,66 @@ template<typename T> vector<int> pal_end(const T& s) {
         while (!p.query(i - ret[i] + 1, i)) ret[i]--;
     }
     return ret;
+}
+
+//expansion 
+int odd(int d, int i, int n) {
+    // d=(manacher[2 * i], i)
+    int l = i - (d - 1) / 2;
+    int r = i + (d - 1) / 2;
+
+    while (l >= 0 && r < n) {
+        //process 
+        l -= 1; r += 1;
+    }
+    return ((r - 1) - (l + 1) + 2) / 2;
+}
+int even(int d, int i, int n) {
+    // d=(manacher[2 * i+1], i)
+    if (i == n - 1) return 0;
+    if (d == 0) d = 2;
+    int l = i - d / 2 + 1;
+    int r = i + d / 2;
+
+    while (l >= 0 && r < n) {
+        //process
+        l -= 1; r += 1;
+    }
+    return ((r - 1) - (l + 1) + 2) / 2;
+}
+
+
+// largest palindrome
+string manacher(const string& s) {
+    if (sz(s) == 0) return "";
+
+    string curr = "";
+    for (auto&& i : s) {
+        curr += i;
+        curr += "#";
+    }
+
+    curr = "@#" + curr + "&";
+    vector<ll> pali(sz(curr), 0);
+    ll center = 0;
+    ll R = 0;
+    for (ll i = 1; i < sz(curr) - 1; i++) {
+        if (i < R) pali[i] = min(pali[2 * center - i], R - i);
+        while (curr[i + (pali[i] + 1)] == curr[i - (pali[i] + 1)]) pali[i]++;
+        if (i + pali[i] > R) {
+            center = i;
+            R = i + pali[i];
+        }
+    }
+    ll HC = 0, CI = 0;
+    for (ll i = 1; i < sz(curr) - 1; i++) {
+        if (pali[i] > HC) {
+            HC = pali[i];
+            CI = i;
+        }
+    }
+    string ans = "";
+    if (HC <= 0) return string(1, s[0]);
+    for (ll i = CI - HC + 1; i <= CI + HC - 1; i += 2) ans += curr[i];
+    return ans;
 }

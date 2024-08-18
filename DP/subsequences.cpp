@@ -25,45 +25,51 @@ struct mint {
     friend bool operator==(mint a, mint b) { return a.x == b.x; }
     friend bool operator!=(mint a, mint b) { return a.x != b.x; }
 };
+// Find the number of distinct subsequences of a given string.
+// distinct subsequences ending at each of the 26 letters of the alphabet.
+template<typename T>int distinctsub(const T& sub) {
+    int n = sz(sub);
+    vector<mint> dp(n + 1, 0);
+    vector<int>last(26, -1);
+    // vector<mint>end_count(26, 0);
+    dp[0] = 1;
+    forn(i, n) {
+        dp[i + 1] += 2 * dp[i];
+        // end_count[sub[i] - 'a'] += dp[i];
+        if (~last[sub[i] - 'a']) {
+            dp[i + 1] -= dp[last[sub[i] - 'a']];
+            // end_count[sub[i] - 'a'] -= dp[last[sub[i] - 'a']];
+        }
+        last[sub[i] - 'a'] = i;
+    }
+    return dp[n].x - 1;
+}
 
-template<typename T>mint distinctsub(const vector<T>& sub) {
+// find the number of distinct subsequences of a given string.
+// number of distinct subsequences of each length from 1 to n
+// number of distinct subsequences of size i -> dp[n][i]
+template<typename T>int distinctsub(const T& sub) {
     int n = sz(sub);
     vector<vector<mint>> dp(n + 1, vector<mint>(n + 1, 0));
     dp[0][0] = 1;
-    // REPLACE WITH A HASH MAP OR A VECTOR IF APPLICABLE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    map<T, int> last;
-    // end_count number of subsequences ending in each ith
-    // map<T, int> end_count;
+    vector<int> last(26, -1);
+    // vector<mint> end_count(26, 0);
     forn(i, n) {
         forn(j, i + 1) {
             dp[i + 1][j + 1] = dp[i][j];
             dp[i + 1][j] += dp[i][j];
+            // end_count[sub[i] - 'a'] += dp[i][j].x;
         }
-        bool ok = last.find(sub[i]) != last.end();
-
-        if (ok) {
-            int prev = last[sub[i]];
+        if (~last[sub[i] - 'a']) {
             forn(j, i + 1) {
-                dp[i + 1][j + 1] -= dp[prev][j];//delete repeated
+                dp[i + 1][j + 1] -= dp[last[sub[i] - 'a']][j];
+                // end_count[sub[i] - 'a'] -= dp[last[sub[i] - 'a']][j].x;
             }
         }
-        // forn(j, i + 1) {
-        //     end_count[sub[i] - 'a'] += dp[i][j].x;
-        //     if (ok) {
-        //         end_count[sub[i] - 'a'] -= dp[last[sub[i] - 'a']][j].x;
-        //     }
-        // }
-
-        last[sub[i]] = i;
+        last[sub[i] - 'a'] = i;
     }
 
-    // number of subsequences for each ith
-    // vector<int> numdist(n + 1, 0);
-    // forne(j, 1, n + 1) numdist[j] = dp[n][j].x;
-
-    //number of distinct subsequences
     mint ans = 0;
     forne(i, 1, n + 1) ans += dp[n][i];
-
-    return ans;
+    return ans.x;
 }
