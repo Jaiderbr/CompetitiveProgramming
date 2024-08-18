@@ -36,13 +36,13 @@ Usage:
         If hashing something other than english characters:
             - Don't have elements with value 0.
             - Use c > max element value.
-    
+
 
 */
-struct _hash {
+struct Hash {
     mint c, mod;
     vector<mint> h, p;
-    _hash(const string& s, ll c, ll mod) : c(c), mod(mod), h(sz(s) + 1), p(sz(s) + 1) {
+    Hash(const string& s, ll c, ll mod) : c(c), mod(mod), h(sz(s) + 1), p(sz(s) + 1) {
         p[0] = 1;
         h[0] = 0;
         forn(i, sz(s)) {
