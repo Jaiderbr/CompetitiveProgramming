@@ -17,6 +17,7 @@ struct mint {
         }
         return r;
     }
+
     mint inv() { return pow(m - 2); }
     mint& operator/=(mint b) { return *this *= b.pow(m - 2); }
     friend mint operator+ (mint a, mint b) { return a += b; }
@@ -55,3 +56,9 @@ struct Hash {
         return (h[b + 1] - ((h[a] * p[b - a + 1])));
     }
 };
+
+bool same(Hash& Ha, Hash& Hb, int l, int r) {
+    int qa = Ha.get(l, r).x;
+    int qb = Hb.get(sz(Hb.h) - 2 - r, sz(Hb.h) - 2 - l).x;
+    return qa == qb;
+}

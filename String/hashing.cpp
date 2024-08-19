@@ -24,3 +24,9 @@ struct Hash {
         return (h[b + 1] - ((h[a] * p[b - a + 1]) % mod) + mod) % mod;
     }
 };
+
+bool same(Hash& Ha, Hash& Hb, int l, int r) {
+    int qa = Ha.get(l, r);
+    int qb = Hb.get(sz(Hb.h) - 2 - r, sz(Hb.h) - 2 - l);
+    return qa == qb;
+}
