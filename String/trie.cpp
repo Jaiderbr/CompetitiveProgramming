@@ -44,4 +44,17 @@ struct trie {
         int id = find(s);
         return id >= 0 ? pref[id] : 0;
     }
+
+    string kth_word(int k, int x = 0, string s = "") {
+        if (k <= end[x])  return s;
+        k -= end[x];
+        for (int i = 0; i < sigma; i++) {
+            int nxt = to[x][i];
+            if (!nxt) continue;
+            if (k <= pref[nxt]) return kth_word(k, nxt, s + char(i + norm));
+            k -= pref[nxt];
+        }
+        return "-1";
+    }
+
 };
