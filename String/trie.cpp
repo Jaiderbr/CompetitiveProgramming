@@ -1,58 +1,47 @@
-struct Node {
-    int cont;
-    Node* child[26];
-};
-
-struct Trie {
-    Node* root;
-
-    Trie() {
-        root = new Node();
+// T.count pref(s) number of strings that have a as a prefix
+struct trie {
+    vector<vector<int>> to;
+    vector<int> end, pref;
+    int sigma; char norm;
+    int lcpsum = 0;
+    trie(int sigma_ = 26, char norm_ = 'a') : sigma(sigma_), norm(norm_) {
+        to = { vector<int>(sigma) };
+        end = { 0 }, pref = { 0 };
     }
-
-    void insert(const string& s) {
-        Node* curr = root;
-        for (int i = 0; i < sz(s); ++i) {
-            if (curr->child[s[i] - 'a'] == NULL) {
-                curr->child[s[i] - 'a'] = new Node();
+    void insert(string s) {
+        int x = 0;
+        for (auto c : s) {
+            int& nxt = to[x][c - norm];
+            if (!nxt) {
+                nxt = to.size();
+                to.pb(vector<int>(sigma));
+                end.pb(0), pref.pb(0);
             }
-            curr->child[s[i] - 'a']->cont++;
-            curr = curr->child[s[i] - 'a'];
-
+            // else lcpsum += pref[nxt];
+            x = nxt, pref[x]++;
         }
+        end[x]++, pref[0]++;
     }
-    void remove(const string& s) {
-        Node* curr = root;
-        for (int i = 0; i < sz(s); ++i) {
-            if (curr->child[s[i] - 'a'] == NULL) {
-                return;
-            }
-            curr->child[s[i] - 'a']->cont--;
-            curr = curr->child[s[i] - 'a'];
+    void erase(string s) {
+        int x = 0;
+        for (char c : s) {
+            int& nxt = to[x][c - norm];
+            x = nxt, pref[x]--;
+            if (!pref[x]) nxt = 0;
         }
+        end[x]--, pref[0]--;
     }
-    int calc(const string& s) {
-        auto node = root;
-        vector<int> c;
-        for (int i = 0; i < sz(s); i++) {
-            node = node->child[s[i] - 'a'];
-            c.push_back(node->cont);
+    int find(string s) {
+        int x = 0;
+        for (auto c : s) {
+            x = to[x][c - norm];
+            if (!x) return -1;
         }
-        int ans = c[sz(s) - 1] * sz(s);
-        for (int i = sz(s) - 2; i >= 0; i--) {
-            ans += (c[i] - c[i + 1]) * (i + 1);
-        }
-        return ans;
+        return x;
     }
 
-    pair<int, int> query(const string& s) {
-        Node* curr = root;
-        for (int i = 0; i < sz(s); ++i) {
-            if (curr->child[s[i] - 'a'] == NULL) {
-                return make_pair(i, curr->cont);
-            }
-            curr = curr->child[s[i] - 'a'];
-        }
-        return make_pair(sz(s), curr->cont);
+    int count_pref(string s) {
+        int id = find(s);
+        return id >= 0 ? pref[id] : 0;
     }
 };
