@@ -1,6 +1,7 @@
 static constexpr int mod = 998244353;
 struct mint {
     static constexpr int  m = 998244353;
+    // static inline int  m = 998244353; //to change mod
     int x;
     mint() : x(0) {}
     mint(long long x_) :x(x_% m) { if (x < 0) x += m; }
@@ -31,7 +32,7 @@ struct mint {
 
 /*
 Usage:
-        Good values c = 137, mod = 10^9 + 7, mod = 1e18 + 9.
+        Good values c = 137, modbest=998244353, mod = 10^9 + 7, mod = 1e18 + 9.
         If necessary to check too many pairs of hashes, use two
         different hashes.
         If hashing something other than english characters:
@@ -44,6 +45,7 @@ struct Hash {
     mint c, mod;
     vector<mint> h, p;
     Hash(const string& s, ll c, ll mod) : c(c), mod(mod), h(sz(s) + 1), p(sz(s) + 1) {
+        // mint::m = mod;
         p[0] = 1;
         h[0] = 0;
         forn(i, sz(s)) {
