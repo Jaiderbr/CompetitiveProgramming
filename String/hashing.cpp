@@ -1,6 +1,6 @@
 /*
 Usage:
-        Good values c = 137, mod = 10^9 + 7, mod = 1e18 + 9.
+        Good values c = 137, modbest=998244353, mod = 10^9 + 7, mod = 1e18 + 9.
         If necessary to check too many pairs of hashes, use two
         different hashes.
         If hashing something other than english characters:

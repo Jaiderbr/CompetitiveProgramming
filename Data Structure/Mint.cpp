@@ -2,6 +2,7 @@ static constexpr int mod = 998244353;
 
 struct mint {
     static constexpr int  m = 998244353;
+    // static inline int  m = 998244353; //to change mod
     int x;
     mint() : x(0) {}
     mint(long long x_) :x(x_% m) { if (x < 0) x += m; }
