@@ -10,19 +10,21 @@ ahobit: used to search for a pattern in a string
 */
 struct ahobit {
     static constexpr int N = 1e5 + 9;
-    bitset<N>bs[26], oc;
-    vector<int> a;
-    int numoc = 0, szp;
+    bitset<N>bs[26], oc, _all;
+    int szp;
     ahobit(const string& s) {
-        for (int i = 0; s[i]; i++) bs[s[i] - 'a'][i] = 1;
+        for (int i = 0; i < sz(s); i++) bs[s[i] - 'a'][i] = 1, _all[i] = 1;
     }
     void add(const string& p) {
-        numoc = 0; oc.set(); szp = sz(p);
-        for (int i = 0; p[i]; i++) oc &= (bs[p[i] - 'a'] >> i);
-        numoc = oc.count();
-        build();
+        // oc.set();
+        oc = _all; szp = sz(p);
+        for (int i = 0; i < sz(p); i++) oc &= (bs[p[i] - 'a'] >> i);
     }
-    void build() {
+    int num_occu() {
+        return oc.count();
+    }
+    vector<int> pos_occu() {
+        vector<int> a;
         int pos = oc._Find_first();
         a.clear(); a.pb(pos);
         pos = oc._Find_next(pos);
@@ -30,6 +32,7 @@ struct ahobit {
             a.pb(pos);
             pos = oc._Find_next(pos);
         }
+        return a;
     }
 
     int query(int l, int r) {
