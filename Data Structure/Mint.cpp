@@ -25,6 +25,7 @@ struct mint {
     friend mint operator-(mint a, mint b) { return a -= b; }
     friend mint operator/(mint a, mint b) { return a /= b; }
     friend mint operator*(mint a, mint b) { return a *= b; }
+    friend bool operator<(mint a, mint b) { return a.x < b.x; }
     friend bool operator==(mint a, mint b) { return a.x == b.x; }
     friend bool operator!=(mint a, mint b) { return a.x != b.x; }
 };
