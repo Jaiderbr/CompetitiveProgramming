@@ -8,15 +8,24 @@ Usage:
             - Use c > max element value.
 */
 
+//#define int int64_t
+constexpr int mxN = 1e6 + 7;
+vector<int>p(mxN);
+void pre(int c, int mod) {
+    p[0] = 1;
+    for (int i = 0; i < mxN - 1; i++) {
+        p[i + 1] = (c * p[i]) % mod;
+    }
+}
+
 struct Hash {
+    #warning llamar pre;
     ll c, mod;
-    vector<ll> h, p;
-    Hash(const string& s, ll c, ll mod) : c(c), mod(mod), h(sz(s) + 1), p(sz(s) + 1) {
-        p[0] = 1;
+    vector<int> h;
+    Hash(const string& s, const int c, const int mod) : c(c), mod(mod), h(sz(s) + 1) {
         h[0] = 0;
         for (int i = 0; i < sz(s); i++) {
             h[i + 1] = (c * h[i] + s[i]) % mod;
-            p[i + 1] = (c * p[i]) % mod;
         }
     }
     // Returns hash of interval s[a ... b] (where 0 <= a <= b < sz(s))
