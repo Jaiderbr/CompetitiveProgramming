@@ -1,4 +1,4 @@
-constexpr  int MAX = 2 * 1e5 + 7;
+constexpr int MAX = 1e5 + 7;
 
 namespace sam {
     int cur, sz, len[2 * MAX], link[2 * MAX], acc[2 * MAX];
@@ -21,14 +21,15 @@ namespace sam {
         memset(nxt, 0, sizeof(nxt));
         forn(i, min(MAX, 2 * n + 7)) acc[i] = len[i] = link[i] = 0;
     }
+    
     void build(string& s) {
-        clear(sz(s));
+        #warning "clear????";
+        //clear(sz(s));
         cur = 0, sz = 0, len[0] = 0, link[0] = -1, sz++;
         for (auto i : s) add(i - 'a');
         int at = cur;
         while (at) acc[at] = 1, at = link[at];
     }
-
 
     ll distinct_substrings() {
         ll ans = 0;
@@ -67,7 +68,15 @@ namespace sam {
         return *max_element(all(LCS));
     }
 
-
+    bool isSubstr(string& s) {
+        int at = 0;
+        for (auto i : s) {
+            if (!nxt[at][i - 'a']) return false;
+            at = nxt[at][i - 'a'];
+        }
+        return true;
+    }
+        
     ll dp[2 * MAX];
     ll paths(int i) {
         auto& x = dp[i];
