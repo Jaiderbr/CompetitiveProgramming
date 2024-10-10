@@ -1,47 +1,46 @@
-constexpr int MAX = 1e5 + 7;
+constexpr  int MAX = 1e5 + 7;
 
 namespace sam {
-    int cur, sz, len[2 * MAX], link[2 * MAX], acc[2 * MAX];
-    int nxt[2 * MAX][26];
+    struct node {
+        int len, link, cnt;
+        bool acc;
+        map<char, int> next;
+    };
+    int cur, sz;
+    vector<node> sa(MAX * 2);
 
-    void add(int c) {
+    void add(char c) {
         int at = cur;
-        len[sz] = len[cur] + 1, cur = sz++;
-        while (at != -1 && !nxt[at][c]) nxt[at][c] = cur, at = link[at];
-        if (at == -1) { link[cur] = 0; return; }
-        int q = nxt[at][c];
-        if (len[q] == len[at] + 1) { link[cur] = q; return; }
+        sa[sz].len = sa[cur].len + 1, cur = sz++;
+        while (at != -1 && !sa[at].next.count(c)) sa[at].next[c] = cur, at = sa[at].link;
+        if (at == -1) { sa[cur].link = 0; return; }
+        int q = sa[at].next[c];
+        if (sa[q].len == sa[at].len + 1) { sa[cur].link = q; return; }
         int qq = sz++;
-        len[qq] = len[at] + 1, link[qq] = link[q];
-        for (int i = 0; i < 26; i++) nxt[qq][i] = nxt[q][i];
-        while (at != -1 && nxt[at][c] == q) nxt[at][c] = qq, at = link[at];
-        link[cur] = link[q] = qq;
+        sa[qq].len = sa[at].len + 1, sa[qq].next = sa[q].next, sa[qq].link = sa[q].link;
+        while (at != -1 && sa[at].next[c] == q) sa[at].next[c] = qq, at = sa[at].link;
+        sa[q].link = sa[cur].link = qq;
     }
-    void clear(int n) {
-        memset(nxt, 0, sizeof(nxt));
-        forn(i, min(MAX, 2 * n + 7)) acc[i] = len[i] = link[i] = 0;
-    }
-    
+
     void build(string& s) {
         #warning "clear????";
-        //clear(sz(s));
-        cur = 0, sz = 0, len[0] = 0, link[0] = -1, sz++;
-        for (auto i : s) add(i - 'a');
+        sa.assign(MAX * 2, node());
+        cur = 0, sz = 0, sa[0].len = 0, sa[0].link = -1, sz++;
+        for (auto& i : s) add(i);
         int at = cur;
-        while (at) acc[at] = 1, at = link[at];
+        while (at) sa[at].acc = 1, at = sa[at].link;
     }
-
-    ll distinct_substrings() {
+    int64_t distinct_substrings() {
         ll ans = 0;
-        for (int i = 1; i < sz; i++) ans += len[i] - len[link[i]];
+        for (int i = 1; i < sz; i++) ans += sa[i].len - sa[sa[i].link].len;
         return ans;
     }
     int longest_common_substring(string& S, string& T) {
         build(S);
         int at = 0, l = 0, ans = 0, pos = -1;
         for (int i = 0; i < sz(T); i++) {
-            while (at && !nxt[at][T[i] - 'a']) at = link[at], l = len[at];
-            if (nxt[at][T[i] - 'a']) at = nxt[at][T[i] - 'a'], l++;
+            while (at && !sa[at].next.count(T[i])) at = sa[at].link, l = sa[at].len;
+            if (sa[at].next.count(T[i])) at = sa[at].next[T[i]], l++;
             else at = 0, l = 0;
             if (l > ans) ans = l, pos = i;
         }
@@ -53,11 +52,11 @@ namespace sam {
         match.assign(MAX, 0);
         int u = 0, l = 0;
         for (int i = 0; i < sz(t); ++i) {
-            while (u && !nxt[u][t[i] - 'a']) u = link[u], l = len[u];
-            if (nxt[u][t[i] - 'a']) u = nxt[u][t[i] - 'a'], l++;
+            while (u && !sa[u].next.count(t[i])) u = sa[u].link, l = sa[u].len;
+            if (sa[u].next.count(t[i])) u = sa[u].next[t[i]], l++;
             match[u] = max(match[u], l);
         }
-        for (int i = MAX - 1; i > 0; --i) match[i] = max(match[i], match[link[i]]);
+        for (int i = MAX - 1; i > 0; --i) match[i] = max(match[i], match[sa[i].link]);
         for (int i = 0; i < MAX; ++i) LCS[i] = min(LCS[i], match[i]);
     }
 
@@ -68,32 +67,40 @@ namespace sam {
         return *max_element(all(LCS));
     }
 
-    bool isSubstr(string& s) {
+    int isSubstr(string& s) {
         int at = 0;
-        for (auto i : s) {
-            if (!nxt[at][i - 'a']) return false;
-            at = nxt[at][i - 'a'];
+        for (auto& i : s) {
+            if (!sa[at].next.count(i)) return 0;
+            at = sa[at].next[i];
         }
-        return true;
+        return at;
     }
-        
+
+    int count_occ(int u) {
+        if (sa[u].cnt != 0) return sa[u].cnt;
+        sa[u].cnt = sa[u].acc;
+        for (auto& v : sa[u].next) sa[u].cnt += count_occ(v.s);
+        return sa[u].cnt;
+    }
     ll dp[2 * MAX];
     ll paths(int i) {
         auto& x = dp[i];
         if (x) return x;
         x = 1;
-        for (int j = 0; j < 26; j++) if (nxt[i][j]) x += paths(nxt[i][j]);
+        for (char j = 'a';j <= 'z';j++) {
+            if (sa[i].next.count(j)) x += paths(sa[i].next[j]);
+        }
         return x;
     }
 
     void kth_substring(int k, int at = 0) { // k=1 : menor substring lexicog.
-        for (int i = 0; i < 26; i++) if (k && nxt[at][i]) {
-            if (paths(nxt[at][i]) >= k) {
-                cout << char('a' + i);
-                kth_substring(k - 1, nxt[at][i]);
+        for (int i = 0; i < 26; i++) if (k && sa[at].next.count(i + 'a')) {
+            if (paths(sa[at].next[i + 'a']) >= k) {
+                cout << char(i + 'a');
+                kth_substring(k - 1, sa[at].next[i + 'a']);
                 return;
             }
-            k -= paths(nxt[at][i]);
+            k -= paths(sa[at].next[i + 'a']);
         }
     }
 };
