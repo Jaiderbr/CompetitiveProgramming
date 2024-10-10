@@ -1,27 +1,29 @@
-constexpr  int MAX = 1e5 + 7;
+constexpr int MAX = 1e5 + 7;
 
 namespace sam {
     struct node {
-        int len, link, cnt;
+        int len, link, cnt, fpos;
         bool acc;
         map<char, int> next;
     };
     int cur, sz;
     vector<node> sa(MAX * 2);
-
+ 
     void add(char c) {
         int at = cur;
-        sa[sz].len = sa[cur].len + 1, cur = sz++;
+        sa[cur].fpos = sa[sz].len = sa[cur].len + 1;
+        sa[cur].fpos -= 1, cur = sz++;
         while (at != -1 && !sa[at].next.count(c)) sa[at].next[c] = cur, at = sa[at].link;
         if (at == -1) { sa[cur].link = 0; return; }
         int q = sa[at].next[c];
         if (sa[q].len == sa[at].len + 1) { sa[cur].link = q; return; }
         int qq = sz++;
         sa[qq].len = sa[at].len + 1, sa[qq].next = sa[q].next, sa[qq].link = sa[q].link;
+        sa[qq].fpos = sa[q].fpos;
         while (at != -1 && sa[at].next[c] == q) sa[at].next[c] = qq, at = sa[at].link;
         sa[q].link = sa[cur].link = qq;
     }
-
+ 
     void build(string& s) {
         #warning "clear????";
         sa.assign(MAX * 2, node());
@@ -59,14 +61,14 @@ namespace sam {
         for (int i = MAX - 1; i > 0; --i) match[i] = max(match[i], match[sa[i].link]);
         for (int i = 0; i < MAX; ++i) LCS[i] = min(LCS[i], match[i]);
     }
-
+ 
     int lcs_n(vector<string>& t) {
         const int INF = 1e7;
         LCS.assign(MAX, INF);
         forn(i, sz(t)) lcsMatch(t[i]);
         return *max_element(all(LCS));
     }
-
+ 
     int isSubstr(string& s) {
         int at = 0;
         for (auto& i : s) {
@@ -75,13 +77,19 @@ namespace sam {
         }
         return at;
     }
-
+ 
     int count_occ(int u) {
         if (sa[u].cnt != 0) return sa[u].cnt;
         sa[u].cnt = sa[u].acc;
         for (auto& v : sa[u].next) sa[u].cnt += count_occ(v.s);
         return sa[u].cnt;
     }
+ 
+    int pos_occ(string& s) {
+        int x = sam::isSubstr(s);
+        return x ? (abs(sam::sa[x].fpos - sz(s)) + 1) : -1;
+    }
+ 
     ll dp[2 * MAX];
     ll paths(int i) {
         auto& x = dp[i];
@@ -92,7 +100,7 @@ namespace sam {
         }
         return x;
     }
-
+ 
     void kth_substring(int k, int at = 0) { // k=1 : menor substring lexicog.
         for (int i = 0; i < 26; i++) if (k && sa[at].next.count(i + 'a')) {
             if (paths(sa[at].next[i + 'a']) >= k) {
