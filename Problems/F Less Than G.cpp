@@ -1,6 +1,6 @@
 /*
 Given two arrays a and b of n non-negative integers, count the number of good pairs
-l,r (1≤l≤r≤n), satisfying F(l,r)<G(l,r)
+l,r (1<=l<=r<=n), satisfying F(l,r)<G(l,r)
 Where F(l,r) is the sum of the square of numbers in the range [l,r]
 And G(l,r) is the square of the bitwise OR of the range [l,r]
 */
