@@ -1,6 +1,6 @@
 /*
 Shortest Hamiltonian Path
-Resuelve problemas del tipo de encontrar el camino más corto 
+Resuelve problemas del tipo de encontrar el camino mas corto 
 que recorre todos los nodos de un grafo una sola vez.
 */
 vector<vector<pair<int, int>>> ady;
