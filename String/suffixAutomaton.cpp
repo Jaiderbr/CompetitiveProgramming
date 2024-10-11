@@ -1,17 +1,20 @@
-
+// codebreaker suffix automaton
 struct suffixAutomaton {
     struct node {
         int len, link; bool end;
         map<char, int> next;
-        int cnt; ll in, out;
+        int cnt; ll in, out, cntSubstrs;
     };
 
     vector<node> sa;
+    //ocurrencias de estados, usar encontrar kth pequeña lexico all strings
+    vector<ll> cntState;
     int last; ll substrs = 0;
 
     suffixAutomaton() {}
     suffixAutomaton(string& s) {
-        sa.reserve(s.size() * 2);
+        sa.reserve(sz(s) * 2);
+        // cntState.reserve(sz(s)*2); 
         last = add_node();
         sa[0].link = -1;
         sa[0].in = 1;
@@ -23,6 +26,7 @@ struct suffixAutomaton {
 
     void add_char(char c) {
         int u = add_node(), p = last;
+        // cntState[u] = 1;
         sa[u].len = sa[last].len + 1;
         while (p != -1 && !sa[p].next.count(c)) {
             sa[p].next[c] = u;
@@ -34,6 +38,7 @@ struct suffixAutomaton {
             int q = sa[p].next[c];
             if (sa[p].len + 1 != sa[q].len) {
                 int clone = add_node();
+                // cntState[clone] = 0;
                 sa[clone] = sa[q];
                 sa[clone].len = sa[p].len + 1;
                 sa[clone].in = 0;
@@ -49,17 +54,9 @@ struct suffixAutomaton {
         }
         last = u;
     }
-
-    void run(string& s) {
-        int u = 0;
-        for (int i = 0; i < s.size(); ++i) {
-            while (u && !sa[u].next.count(s[i])) u = sa[u].link;
-            if (sa[u].next.count(s[i])) u = sa[u].next[s[i]];
-        }
-    }
-
+    //Cuenta la cantidad de ocurrencias de una cadena s
     int match_str(string& s) {
-        int u = 0, n = s.size();
+        int u = 0, n = sz(s);
         for (int i = 0; i < n; ++i) {
             if (!sa[u].next.count(s[i])) return 0;
             u = sa[u].next[s[i]];
@@ -71,35 +68,101 @@ struct suffixAutomaton {
         if (sa[u].cnt != 0) return sa[u].cnt;
         sa[u].cnt = sa[u].end;
         for (auto& v : sa[u].next)
-            sa[u].cnt += count_occ(v.s);
+            sa[u].cnt += count_occ(v.ss);
         return sa[u].cnt;
     }
 
+    //Calcular la cantidad de caminos que pertenecen al estado ti, desde ti hasta tn
     ll count_paths(int u) {
-        if (sa[u].out != 0) return sa[u].out;
+        //Out cuenta la cantidad de caminos (cantidad de cadenas distintas)
+        if (sa[u].out != 0) return sa[u].out; //sa[u].cntSubstrs != 0 return sa[u].cntSubstrs
         for (auto& v : sa[u].next)
-            sa[u].out += count_paths(v.s) + 1;
-        return sa[u].out;
+            sa[u].out += count_paths(v.ss); //sa[u].cntSubstrs += count_paths(v.ss)
+        return ++sa[u].out; //sa[u].cntSubstrs += cntState[u];
     }
 
-    int lcs(string& T) {
-        int v = 0, l = 0, best = 0, bestpos = 0;
-        forn(i, sz(T)) {
-            while (v && !sa[v].next.count(T[i])) {
-                v = sa[v].link, l = sa[v].len;
+    //kth subcadena más pequeña en orden lexicográfico
+    //out para cadenas distintas, cntSubstrs para todas las cadenas llamar antes pre
+    string kth;
+    void dfs_kth(int u, ll& k) { //Antes llamar a count
+        if (k == 0) return; // k < cntState[u] para todas las cadenas
+        k--; // k -= cntState[u];
+        for (auto& v : sa[u].next) {
+            if (k < sa[v.ss].out) { //k < sa[v.ss].cntSubstrs
+                kth += v.ff;
+                return dfs_kth(v.ss, k);
             }
-            if (sa[v].next.count(T[i])) {
-                v = sa[v].next[T[i]];
-                l++;
-            }
-            if (l > best) {
-                best = l;
-                bestpos = i;
-            }
+            k -= sa[v.ss].out; //k -= sa[v.ss],cntSubstrs
         }
-	//T.substr(bestpos - best + 1, best);
+    }
+    //calcula la cantidad de ocurrencias de los estados
+    void pre() {
+        vector<ii> v(sz(sa));
+        forn(i, sz(sa)) v[i] = { sa[i].len, i };
+        sort(all(v), greater<ii>());
+        for (auto& it : v) {
+            int u = it.ss;
+            if (sa[u].link != -1)
+                cntState[sa[u].link] += cntState[u];
+        }
+        cntState[0] = 1;
+    }
+    //longest common substring
+    int lcs(string& t) {
+        int n = sz(t);
+        int u = 0, l = 0, best = 0, bestPosition = 0;
+        forn(i, n) {
+            while (u && !sa[u].next.count(t[i])) {
+                u = sa[u].link;
+                l = sa[u].len;
+            }
+            if (sa[u].next.count(t[i])) u = sa[u].next[t[i]], l++;
+            if (best < l) best = l, bestPosition = i;
+        }
         return best;
     }
+    vector<int> LCS, match;
+    void lcsMatch(string& t) {
+        match.assign(sz(sa), 0); //usar pivote si toca resetear mucho
+        int u = 0, l = 0;
+        for (int i = 0; i < sz(t); ++i) {
+            while (u && !sa[u].next.count(t[i])) {
+                u = sa[u].link;
+                l = sa[u].len;
+            }
+            if (sa[u].next.count(t[i])) u = sa[u].next[t[i]], l++;
+            match[u] = max(match[u], l);
+        }
+        for (int i = sz(sa) - 1; i > 0; --i)
+            match[i] = max(match[i], match[sa[i].link]);
+        for (int i = 0; i < sz(sa); ++i)
+            LCS[i] = min(LCS[i], match[i]);
+    }
 
+    //longest common substring de n cadenas
+    int lcs_n(vector<string>& t) {
+        const int INF = 1e7;
+        LCS.assign(sz(sa), INF);
+        forn(i, sz(t)) lcsMatch(t[i]);
+        return *max_element(all(LCS));
+    }
+
+    //longitud desde 1 hasta N, return v donde v[i] = num distintas substr de i longitud
+    vector<int> substringDistribution(int lenCadena) {
+        vector<int> st(lenCadena + 5);
+        forn(i, sz(sa)) {
+            int l = sa[sa[i].link].len + 1; // l minlen subcadena que pertenece al conjunto sa[i]
+            int r = sa[i].len; // r maxlen subcadena que pertenece al conjunto s[i]
+            if (l > 0) st[l]++, st[r + 1]--;
+        }
+        forn(i, lenCadena + 1) st[i + 1] += st[i];
+        return st;
+    }
+    //Devuelve V, V[i] = max ocurrencias para una subcadena de S de longitud i.
+    void maxOcurrenciasLengths(int n) { //Llamar antes count_occ
+        vector<int> ans(n + 1);
+        forn(i, sz(sa)) ans[sa[i].len] = max(ans[sa[i].len], sa[i].cnt);
+        forn(i, n) cout << ans[i + 1] << endl;
+    }
     node& operator[](int i) { return sa[i]; }
 };
