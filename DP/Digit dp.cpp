@@ -1,4 +1,4 @@
-// - Descripción: Cuenta la cantidad de numeros entre [a, b] que no tienen digitos iguales seguidos
+// - Descripcion: Cuenta la cantidad de numeros entre [a, b] que no tienen digitos iguales seguidos
 // - Complejidad: O(NUM_E * NUM_T)
 
 const int MOD = 998244353;

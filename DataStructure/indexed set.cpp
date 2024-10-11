@@ -2,7 +2,6 @@
 using namespace __gnu_pbds;
 template<class T> using T_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 template<class L> using T_multiset = tree<L, null_type, less_equal<L>, rb_tree_tag, tree_order_statistics_node_update>;
-/*
 T_set<int> st;
 st.insert(1);
 st.insert(3);
@@ -21,13 +20,3 @@ int pos = st.order_of_key(6); pos2 = 3
 int pos = st.order_of_key(2); pos2 = 1
 
 st.erase_if([](int x) {return x == 2 || x == 10;});
-
-
-
-
-
-
-
-
-
-*/

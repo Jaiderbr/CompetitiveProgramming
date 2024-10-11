@@ -1,4 +1,4 @@
-Dado un string s devuelve el indice donde comienza la rotación lexicograficamente menor de s.
+Dado un string s devuelve el indice donde comienza la rotacion lexicograficamente menor de s.
 
 int minimum_expression(string s) { //Factorizacion de lyndon
     s = s+s; // si no se concatena devuelve el indice del sufijo menor
