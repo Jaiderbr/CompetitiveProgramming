@@ -7,7 +7,7 @@ struct suffixAutomaton {
     };
 
     vector<node> sa;
-    //ocurrencias de estados, usar encontrar kth pequeña lexico all strings
+    //ocurrencias de estados, usar encontrar kth pequena lexico all strings
     vector<ll> cntState;
     int last; ll substrs = 0;
 
@@ -81,7 +81,7 @@ struct suffixAutomaton {
         return ++sa[u].out; //sa[u].cntSubstrs += cntState[u];
     }
 
-    //kth subcadena más pequeña en orden lexicográfico
+    //kth subcadena mas pequena en orden lexicografico
     //out para cadenas distintas, cntSubstrs para todas las cadenas llamar antes pre
     string kth;
     void dfs_kth(int u, ll& k) { //Antes llamar a count
