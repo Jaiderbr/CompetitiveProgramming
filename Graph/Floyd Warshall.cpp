@@ -1,31 +1,23 @@
-template<typename T>
-struct FloydW {
-    vector<vector<T>> g;
-    int n;
-    int64_t INF = 1e18 + 7; //mxW 
-    FloydW(int N) {
-        this->n = N;
-        g.resize(N, vector<T>(N, INF));
-        forn(i, N) g[i][i] = 0;
-    }
-    void addEdge(int u, int v, T w, int uno) {
-        u -= uno; v -= uno;
-        g[u][v] = min(g[u][v], w);
-        g[v][u] = min(g[v][u], w);
-    }
+int n; cin >> n;
+int ady[n][n];
+const int INF = int(1e9);
 
-    void init() {
-        forn(k, n) {
-            forn(i, n) {
-                forn(j, n) {
-                    g[i][j] = min(g[i][j], g[i][k] + g[k][j]);
-                }
-            }
-        }
-    }
+forn (i, n) {
+  forn (j, n) {
+    ady[i][j] = (i == j ? 0 : INF);
+  }
+}
 
-    T query(int u, int v) {
-        return g[u][v] == INF ? -1 : g[u][v];
-    }
+forn (i, n) {
+  int v, u, w; cin >> v >> u >> w;
+  v--, u--;
+  ady[v][u] = ady[u][v] = w;
+}
 
-};
+forn (k, n) {
+  forn (i, n) {
+    forn (j, n) {
+      ady[i][j] = min(ady[i][j], ady[i][k] + ady[k][j]);
+    }
+  }
+}
