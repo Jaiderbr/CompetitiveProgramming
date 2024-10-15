@@ -1,5 +1,5 @@
 /*
-Genera una permutación de 0 a 2^n-1, de modo que
+Genera una permutacion de 0 a 2^n-1, de modo que
 dos posiciones adyacentes difieren en exactamente 1 bit
 */
 

@@ -99,7 +99,7 @@ bool isConvex(vector<pt> p) {
 // colinear == 0, left > 0, right < 0
 ld orient(pt a, pt b, pt c) {return cross(b-a, c-a);} 
 
-// Devuelve el doble del área formada por tres puntos de un triángulo. Positivo cuando a -> b -> c es un giro a la izquierda.
+// Devuelve el doble del area formada por tres puntos de un triangulo. Positivo cuando a -> b -> c es un giro a la izquierda.
 int64_t area_signed_2x(const pt &a, const pt &b, const pt &c) {
     return cross(b - a, c - a);
 }
