@@ -43,6 +43,8 @@ ld DEG_TO_RAD(ld n){ return n * PI / 180.0; }
 ld RAD_TO_DEG(ld n){ return n * 180.0 / PI; }
 ld abs(pt p) {return sqrt(p.norm());}
 
+pt perp(pt p) {return {-p.y, p.x};}
+
 // Producto Cruz
 int64_t cross(const pt &a, const pt &b) {
     return (int64_t) a.x * b.y - (int64_t) b.x * a.y;
