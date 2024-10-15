@@ -16,6 +16,7 @@ struct pt {
 
     bool operator==(const pt &other) const { return x == other.x && y == other.y; }
     bool operator!=(const pt &other) const { return !(*this == other); }
+    bool operator<(const pt &other) {return x == other.x? y < other.y : x < other.x;}
 
     pt operator-() const { return pt(-x, -y); }
     pt rotate90() const { return pt(-y, x); }
