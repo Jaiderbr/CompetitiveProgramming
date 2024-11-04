@@ -51,6 +51,23 @@ template<typename T> vector<int> pal_end(const T& s) {
     return ret;
 }
 
+void print_pals(const string s) {
+    vector<int> man = manacher(s);
+    int n = sz(s);
+    forn(i, n) {
+        for (int len = 1; len <= man[2 * i]; len += 2) {
+            int start = i - (len - 1) / 2;
+            cout << s.substr(start, len) << endl;
+        }
+        if (i < n - 1) {
+            for (int len = 2; len <= man[2 * i + 1]; len += 2) {
+                int start = i - (len - 2) / 2;
+                cout << s.substr(start, len) << endl;
+            }
+        }
+    }
+}
+
 //expansion 
 int odd(int d, int i, int n) {
     // d=(manacher[2 * i], i)
