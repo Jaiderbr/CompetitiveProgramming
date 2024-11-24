@@ -38,15 +38,12 @@ q => maximo peso
 nums => vector con los pesos
 */
 
-int CalculateLineal(int n, int q, vector<int>& nums) {
-    int cnt = 0;
-    int currSUM = 0;
-    forn(i, n) {
-        if (nums[i] + currSUM > q) {
-            cnt++;
-            currSUM = 0;
-        }
-        currSUM += nums[i];
+int get(int n, int q, vector<int>& nums) {
+    sort(all(nums));
+    int l = 0, r = n - 1, ans = n;
+    while (l < r) {
+        if (nums[l] + nums[r] <= q) ans--, l++, r--;
+        else r--;
     }
-    return cnt + (currSUM > 0);
+    return ans;
 }
