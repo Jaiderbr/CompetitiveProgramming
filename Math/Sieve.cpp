@@ -1,6 +1,6 @@
 const int MAX = int(1e6);
 bitset<MAX + 5> bs;
-vector<int> prime;
+vector<int64_t> prime;
 
 void sieve() {
     bs.set();
