@@ -13,14 +13,6 @@ x &(x - 1);             // Apaga el bit menos significativo en '1' de x.
 ~- n;                   // Resta 1 a n.
 x && (!(x & (x - 1)));  // Comprueba si x es una potencia de 2. 
 
-#define forn(i, n) for (int i = 0; i < n; ++i)
-#define forne(i, n) for (int i = 0; i <= n; ++i)
-#define rforn(i, n) for (int i = n-1; i >= 0; --i)
-#define forab(i, a, b) for (int i = a; i < b; ++i)
-#define forabe(i, a, b) for (int i = a; i <= b; ++i)
-#define form(i, n, m, x) for (int i = n; i < m; i += x)
-#define rform(i, n, m, x) for (int i = n; i >= m; i -= x)
-
 //Rotar una matriz 90 grados
 int n;
 vector<vector<int>> rotar(vector<vector<int>> &a) {
@@ -29,3 +21,17 @@ vector<vector<int>> rotar(vector<vector<int>> &a) {
     v[i][j] = a[n - 1 - j][i];
   return v;
 }
+
+//1234567891011121314151617... what is the digit at position n?
+char digit_at_pos(int n) {
+    n--; // 0 index
+    int len = 9, mm = 1;
+    forne(i, 1, 32) {
+        if (n < len) {
+            int num = n / i + mm, pos = n % i;
+            return to_string(num)[pos];
+        }
+        n -= len, mm *= 10, len = 9 * mm * (i + 1);
+    }
+}
+
