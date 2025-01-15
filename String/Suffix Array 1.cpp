@@ -56,7 +56,7 @@ int find_str(string& s, string& t, vector<int>& sa) {
     return (nL <= nR ? nR - nL + 1 : 0);
 }
 /*
-find the longest common substring what 
+find the longest common substring what
 appear in the string s at least least twice
 */
 string lcs(vector<int>& sa, vector<int>& ka, string& s) {
@@ -69,7 +69,7 @@ create a new string s + '#' + t
 compute the suffix array of the new string
 compute the LCP array of the new string
 */
-string find_lcs(string& s, string& t, vector<int>& lcp, vector<int>& sa) {
+string find_lcs(string& s, string& t, vector<int>& sa, vector<int>& lcp) {
     int best = 0, n = sz(s), pos = INT_MAX;
     for (int i = 0; i < sz(lcp) - 1; i++) {
         bool i_s = (0 <= sa[i] && sa[i] <= n - 1);
@@ -80,4 +80,15 @@ string find_lcs(string& s, string& t, vector<int>& lcp, vector<int>& sa) {
         }
     }
     return s.substr(pos, best);
+}
+vector<int>substr_begin_by_letter(const string& s, const vector<int>& sa, const vector<int>& lcp) {
+    vector<int>abc(26);
+    int n = sz(s);
+    forn(i, n) abc[s[sa[i]] - 'a'] += n - sa[i] - lcp[i];
+    return abc;
+}
+int dis_substr(const string& s, const vector<int>& sa, const vector<int>& lcp) {
+    int n = sz(s), ans = 0;
+    forn(i, n) ans += n - sa[i] - lcp[i];
+    return ans;
 }
