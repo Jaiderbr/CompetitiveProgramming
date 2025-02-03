@@ -35,3 +35,6 @@ char digit_at_pos(int n) {
   }
 }
 
+// sum of even or odd numbers from l to r
+auto eve = [&](int l, int r) { return ((r / 2) * ((r / 2) + 1)) - (((l - 1) / 2) * (((l - 1) / 2) + 1));};
+auto odd = [&](int l, int r) { return (r * (r + 1) / 2) - ((l - 1) * ((l - 1) + 1) / 2) - eve(l, r); };

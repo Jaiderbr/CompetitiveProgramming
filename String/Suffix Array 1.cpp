@@ -79,7 +79,7 @@ string find_lcs(string& s, string& t, vector<int>& sa, vector<int>& lcp) {
             pos = min(sa[i], sa[i + 1]);
         }
     }
-    return s.substr(pos, best);
+    return pos == INT_MAX ? "" : s.substr(pos, best);
 }
 vector<int>substr_begin_by_letter(const string& s, const vector<int>& sa, const vector<int>& lcp) {
     vector<int>abc(26);
