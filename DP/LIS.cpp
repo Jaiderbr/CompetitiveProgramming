@@ -1,3 +1,4 @@
+
 int lis(vector<int>& a) {
     vector<int>dp;
     forn(i, sz(a)) {
@@ -6,7 +7,28 @@ int lis(vector<int>& a) {
         else dp.pb(a[i]);
     }
     return sz(dp);
+}
 
+constexpr int INF = ((1ULL << 63) - 1) >> 32;
+template<typename T> vector<T> lis(vector<T>& v) {
+    int n = sz(v), m = -1;
+    vector<T> d(n + 1, INF);
+    vector<int> l(n);
+    d[0] = -INF;
+
+    forn(i, n) {
+        // Para non-decreasing use upper_bound()
+        int t = lower_bound(all(d), v[i]) - begin(d);
+        d[t] = v[i], l[i] = t, m = max(m, t);
+    }
+
+    int p = n;
+    vector<T> ans;
+    while (p--) if (l[p] == m) {
+        ans.pb(v[p]); m--;
+    }
+    reverse(all(ans));
+    return ans;
 }
 
 
