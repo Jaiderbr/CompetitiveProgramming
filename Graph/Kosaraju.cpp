@@ -24,7 +24,7 @@ function<void(int)> dfs1 = [&](int v) {
   order.pb(v);
 };
 
-forn (i, n) (int i = 0; i < n; ++i) if (!vis[i]) dfs1(i);
+forn (i, n) if (!vis[i]) dfs1(i);
 
 vis.assign(n, false);
 
@@ -38,7 +38,7 @@ function<void(int)> dfs2 = [&](int v) {
   }
 };
 
-rforn (i, n - 1) {
+for (int i = n - 1; i >= 0; --i) {
   if (!vis[order[i]]) {
     comp.pb({});
     dfs2(order[i]);
