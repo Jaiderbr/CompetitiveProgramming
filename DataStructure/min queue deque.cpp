@@ -1,5 +1,5 @@
 // para max negar...
-template<class T> struct minqueue {
+template<class T> struct Queue {
     deque<pair<T, int>> q;
 
     void push(T x) {
