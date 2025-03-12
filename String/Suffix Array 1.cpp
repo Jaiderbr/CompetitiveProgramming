@@ -68,6 +68,7 @@ Find the longest common substring of two given strings s and t
 create a new string s + '#' + t
 compute the suffix array of the new string
 compute the LCP array of the new string
+pos_t = (i_s ? sa[i + 1] - (n + 1) : sa[i] - (n + 1));
 */
 string find_lcs(string& s, string& t, vector<int>& sa, vector<int>& lcp) {
     int best = 0, n = sz(s), pos = INT_MAX;
