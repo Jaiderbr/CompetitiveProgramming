@@ -14,12 +14,15 @@ x& (x - 1);             // Apaga el bit menos significativo en '1' de x.
 x && (!(x& (x - 1)));  // Comprueba si x es una potencia de 2. 
 
 //Rotar una matriz 90 grados
-int n;
 vector<vector<int>> rotar(vector<vector<int>>& a) {
-  vector<vector<int>> v(n, vi(n));
-  forn(i, n) forn(j, n)
-    v[i][j] = a[n - 1 - j][i];
-  return v;
+    int n = sz(a), m = sz(a[0]);
+    vector<vector<int>> v(m, vector<int>(n));
+    forn(i, n) {
+        forn(j, m) {
+            v[j][n - 1 - i] = a[i][j];
+        }
+    }
+    return v;
 }
 
 //1234567891011121314151617... what is the digit at position n?
