@@ -41,3 +41,34 @@ char digit_at_pos(int n) {
 // sum of even or odd numbers from l to r
 auto eve = [&](int l, int r) { return ((r / 2) * ((r / 2) + 1)) - (((l - 1) / 2) * (((l - 1) / 2) + 1));};
 auto odd = [&](int l, int r) { return (r * (r + 1) / 2) - ((l - 1) * ((l - 1) + 1) / 2) - eve(l, r); };
+
+// > need
+auto upper_bound = [&](int need) ->int {
+  int l = -1, r = n;
+  while (r - l > 1) {
+    int mid = l + (r - l) / 2;
+    if (nums[mid] <= need) l = mid;
+    else r = mid;
+  }
+  return l;
+  };
+// >= need
+auto lower_bound = [&](int need) ->int {
+  int l = -1, r = n;
+  while (r - l > 1) {
+    int mid = l + (r - l) / 2;
+    if (nums[mid] < need) l = mid;
+    else r = mid;
+  }
+  return r;
+  };
+// == need
+auto search = [&](int need) ->bool {
+  int l = -1, r = n;
+  while (r - l > 1) {
+    int mid = l + (r - l) / 2;
+    if (nums[mid] < need) l = mid;
+    else r = mid;
+  }
+  return nums[r] == need;
+  };
