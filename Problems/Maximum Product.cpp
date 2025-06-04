@@ -1,4 +1,4 @@
-// Find the number from the range [a, b] which has the maximum product of the digits.
+// Find the number from the range [a,b] which has the maximum product of the digits.
 pair<int, string> dp[20][2][2][2];
 bool vis[20][2][2][2];
 

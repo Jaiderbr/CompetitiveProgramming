@@ -46,8 +46,8 @@ struct aho_corasick {
         return index;
     }
 
-    // return donde en el trie deberiamos terminar despues de comenzar en ¨location¨ y agregar el char ¨C¨.
-     // corre en el peor de los casos O(depth) pero se amortiza a O(1) en la mayoria de las situaciones.
+    // return donde en el trie deberiamos terminar despues de comenzar en "location" y agregar el char "C".
+    // corre en el peor de los casos O(depth) pero se amortiza a O(1) en la mayoria de las situaciones.
     int get_suffix_link(int location, char c) const {
         int child;
         while (location >= 0 && (child = nodes[location].get_child(c)) < 0) location = nodes[location].suff;
@@ -190,7 +190,7 @@ struct aho_corasick {
         return first_occurrence;
     }
 
-    // Counts the number of matches over all words at each ending position in "text¨ in O(text length).
+    // Counts the number of matches over all words at each ending position in "text" in O(text length).
     vector<int> count_matches_by_position(const string& text) const {
         vector<int> matches(sz(text));
         int current = 0;
@@ -202,7 +202,7 @@ struct aho_corasick {
         return matches;
     }
 
-    // Counts the total number of matches of all words within ¨text¨ in O(text length).
+    // Counts the total number of matches of all words within "text" in O(text length).
     int64_t count_total_matches(const string& text) const {
         int64_t matches = 0;
         int current = 0;

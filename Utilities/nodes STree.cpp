@@ -23,7 +23,7 @@ struct node {
 };
 
 /*
-    max(al,al+1,…,ar)−min(al,al+1,…,ar)−(r−l),
+    max(al,al+1,...,ar)-min(al,al+1,...,ar)-(r-l),
 */
 constexpr int inf = (1e18);
 struct node {
