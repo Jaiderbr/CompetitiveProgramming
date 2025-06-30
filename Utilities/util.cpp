@@ -15,14 +15,14 @@ x && (!(x& (x - 1)));  // Comprueba si x es una potencia de 2.
 
 //Rotar una matriz 90 grados
 vector<vector<int>> rotar(vector<vector<int>>& a) {
-    int n = sz(a), m = sz(a[0]);
-    vector<vector<int>> v(m, vector<int>(n));
-    forn(i, n) {
-        forn(j, m) {
-            v[j][n - 1 - i] = a[i][j];
-        }
+  int n = sz(a), m = sz(a[0]);
+  vector<vector<int>> v(m, vector<int>(n));
+  forn(i, n) {
+    forn(j, m) {
+      v[j][n - 1 - i] = a[i][j];
     }
-    return v;
+  }
+  return v;
 }
 
 //1234567891011121314151617... what is the digit at position n?
@@ -72,3 +72,21 @@ auto search = [&](int need) ->bool {
   }
   return nums[r] == need;
   };
+
+// xor sum from 0 to x
+int xorsum(int x) {
+  if (x % 4 == 0) return x;
+  else if (x % 4 == 2) return x + 1;
+  else if (x % 4 == 1) return 1;
+  else return 0;
+};
+
+/* resultado de & en el rango [l, r] */
+ll rangeAND(ll l, ll r) {
+  ll ans = 0;
+  rforn(i, 63) {
+    if ((l & (1ll << i)) != (r & (1ll << i))) break;
+    ans |= (l & (1ll << i));
+  }
+  return ans;
+}
