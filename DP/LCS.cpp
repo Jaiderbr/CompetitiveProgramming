@@ -83,35 +83,27 @@ string clcs(const string& s, const string& t) {
 
 //best: construct lcs with  Hirschberg Algorithm 
 string clcsh(const string_view& s, const string_view& t) {
-    int n = sz(s);
-    int m = sz(t);
-
+    int n = sz(s), int m = sz(t);
     if (n == 0 || m == 0) return "";
     if (n == 1) return t.find(s[0]) == string::npos ? "" : string(1, s[0]);
-
     int mid = n >> 1;
     vector<int> dp_ff(m + 1, 0);
     vector<int> dp_ss(m + 1, 0);
     vector<int> newdp(m + 1, 0);
 
     forn(i, mid) {
-        forn(j, m) {
-            newdp[j + 1] = max({ newdp[j], dp_ff[j + 1], dp_ff[j] + (s[i] == t[j]) });
-        }
+        forn(j, m) newdp[j + 1] = max({ newdp[j], dp_ff[j + 1], dp_ff[j] + (s[i] == t[j]) });
         dp_ff.swap(newdp);
     }
 
     newdp.assign(m + 1, 0);
-
     for (int i = n - 1; i >= mid; i--) {
         for (int j = m - 1; j >= 0; j--) {
             newdp[j] = max({ newdp[j + 1], dp_ss[j], dp_ss[j + 1] + (s[i] == t[j]) });
         }
         dp_ss.swap(newdp);
     }
-
     int splt = 0;
-
     forne(j, 1, m + 1) {
         if (dp_ff[j] + dp_ss[j] > dp_ff[splt] + dp_ss[splt]) {
             splt = j;
@@ -120,6 +112,22 @@ string clcsh(const string_view& s, const string_view& t) {
     dp_ff.clear();
     dp_ss.clear();
     newdp.clear();
-
     return (clcsh(s.substr(0, mid), t.substr(0, splt)) + clcsh(s.substr(mid), t.substr(splt)));
+}
+
+// lcs con tolerncia de 1% de eliminaciones al inicio
+int lcs(const string& s, const string& t) {
+    int n = sz(s);
+    int poda = (n * 1) / 100 + 1;
+    int ans = 0;
+    vector<vector<int>> dp(poda + 1, vector<int>(poda + 1, 0));
+    forn(i, poda + 1) {
+        forn(j, poda + 1) {
+            while (i + dp[i][j] < n && j + dp[i][j] < n && s[i + dp[i][j]] == t[j + dp[i][j]]) dp[i][j]++;
+            if (i + 1 <= poda) dp[i + 1][j] = max(dp[i + 1][j], dp[i][j]);
+            if (j + 1 <= poda) dp[i][j + 1] = max(dp[i][j + 1], dp[i][j]);
+            ans = max(ans, dp[i][j]);
+        }
+    }
+    return ans;
 }
