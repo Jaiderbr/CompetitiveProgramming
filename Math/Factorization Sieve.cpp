@@ -1,5 +1,7 @@
-int primediv[MAX];//10^6
-vector<ll> primes;
+#define int int64_t
+constexpr int MAX = 1e6;
+int primediv[MAX]; //10^6
+vector<int> primes;
 
 void sieve() {
     forn(i, MAX) primediv[i] = i;
@@ -8,12 +10,12 @@ void sieve() {
         if (primediv[i] != i) continue;
         primes.pb(i);
         if (i > root) continue;
-        for(int j = i * i; j < MAX; j += i) primediv[j] = i;
+        for (int j = i * i; j < MAX; j += i) primediv[j] = i;
     }
 }
 
-map<ll, int> factorize(ll n) {//n <= 10^12
-    map<ll, int> factors;
+map<int, int> factorize(int n) { //n <= 10^12
+    map<int, int> factors;
     for (int i = 0; i < primes.size() && n >= MAX; ++i) {
         while (n % primes[i] == 0) {
             factors[primes[i]]++;
