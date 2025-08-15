@@ -1,4 +1,5 @@
 /*
+add: https://github.com/Jaiderbr/CompetitiveProgramming/blob/main/String/aho%20corasick.cpp
 You want to select as many non-overlapping substrings of S
 as possible such that each selected substring is exactly equal to one of the M strings.
 
