@@ -70,6 +70,7 @@ struct Hash2D {
 
     /*
     (x1 = 0, y1 = 0, x2 = n-1, y2 = m-1)
+    get(i, j, i + n - 1, j + m - 1)
     x1,y1   ──────────  x1,y2
     │                   │
     │     submatriz     │
