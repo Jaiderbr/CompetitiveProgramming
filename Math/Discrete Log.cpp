@@ -1,50 +1,35 @@
 // Returns minimum x for which a ^ x % m = b % m, a and m are coprime.
-int discrete_log_coprime(int a, int b, int m) {
-    int n = sqrt(m) + 1, an = 1;
-    unordered_map<int, int> mapa;
+#define int int64_t
+constexpr int INF = 1e18;
+int discrete_log(int b, int a, int m) {
+    if (a == 0) return b ? -1 : 1; // base case?
 
-    forn(i, n) an = (an * a) % m;
-
-    int aq = b, anp = 1;
-    forn(q, n + 1) {
-        mapa[aq] = q;
-        aq = (aq * a) % m;
-    }
-
-    forabe(p, 1, n) {
-        anp = (anp * an) % m;
-        if (mapa.count(anp))
-            return n * p - mapa[anp];
-    }
-    return -1;
-}
-
-int discrete_log_nocoprime(int a, int b, int m) {
-    if (a == 0) return (b == 0) ? 1 : -1;
-
-    a %= m;  b %= m;
-    int k = 1, add = 0, g;
-    while ((g = __gcd(a, m)) > 1) {
-        if (b == k) return add;
+    a %= m, b %= m;
+    int k = 1, shift = 0;
+    while (1) {
+        int g = __gcd(a, m);
+        if (g == 1) break;
+        if (b == k) return shift;
         if (b % g) return -1;
-        b /= g;  m /= g;  add++;
-        k = (k * a / g) % m;
+        b /= g, m /= g, shift++;
+        k = (int)k * a / g % m;
     }
 
-    int n = sqrt(m) + 1, an = 1, aq = b, anp = k;
-    unordered_map<int, int> mapa;
+    int sq = sqrt(m) + 1, giant = 1;
+    forn(i, sq) giant = (int)giant * a % m;
 
-    forn(i, n) an = (an * a) % m;
+    vector<pair<int, int>> baby;
+    for (int i = 0, cur = b; i <= sq; i++) {
+        baby.emplace_back(cur, i);
+        cur = (int)cur * a % m;
+    }
+    sort(all(baby));
 
-    forn(q, n + 1) {
-        mapa[aq] = q;
-        aq = (aq * a) % m;
+    for (int j = 1, cur = k; j <= sq; j++) {
+        cur = (int)cur * giant % m;
+        auto it = lower_bound(all(baby), make_pair(cur, INF));
+        if (it != baby.begin() and (--it)->f == cur) return sq * j - it->s + shift;
     }
 
-    forne(p, 1, n + 1) {
-        anp = (anp * an) % m;
-        if (mapa.count(anp))
-            return n * p - mapa[anp] + add;
-    }
     return -1;
 }
