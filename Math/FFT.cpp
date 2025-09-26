@@ -1,65 +1,62 @@
-typedef complex<double> base;
-const double PI = acos(-1);
+// #include <complex> ...?
 
-struct FFT {
-	vector<int> rev;
-	FFT(){ }
- 
-	void calc_rev(int n, int log_n){
-		forn(i, n) {
-			rev.pb(0);
-			forn(j, log_n)
-				if(i & (1<<j))
-					rev[i] |= 1<<(log_n-1-j);
-		}
-	}
- 
-	void computeFFT(vector<base> &a, bool invert) {
-		int n = (int) a.size();
- 
-		forn(i, n)
-			if (i < rev[i])
-				swap (a[i], a[rev[i]]);
- 
-		for(int len=2; len<=n; len<<=1) {
-			double ang = 2*PI/len * (invert ? -1 : 1);
-			base wlen (cos(ang), sin(ang));
-			for (int i=0; i<n; i+=len) {
-				base w(1);
-				for (int j=0; j<len/2; ++j) {
-					base u = a[i+j],  v = a[i+j+len/2] * w;
-					a[i+j] = u + v;
-					a[i+j+len/2] = u - v;
-					w *= wlen;
-				}
-			}
-		}
-		if(invert)
-			forn(i, n)
-				a[i] /= n;
-	}
-	
-	vector<int> multiply(vector<int> &a, vector<int> &b) {
-		int n;  for(n = 1; n < sz(a) + sz(b); n <<= 1);
-		calc_rev(n, round(log2(n)));
+/*
+usage complex<double> como tipo de dato
+vector<complex<double>> a(k + 1), b(k + 1);
+vector<complex<double>> c = convolution(a, b);
+(int)(c[i].real() + 0.5) para redondear
+*/
 
-		vector<base> fa(a.begin(), a.end()), fb(b.begin(), b.end());
-		fa.resize(n);  fb.resize(n);
- 
-		computeFFT(fa, false),  computeFFT(fb, false);
-		forn(i, n) fa[i] *= fb[i];
-		computeFFT(fa, true);
- 
-		vector<int> res(n);
-		forn(i, n) res[i] = int(fa[i].real() + 0.5);
- 
-		//Carries for integer multiplication
-		/*int carry = 0;
-		forn(i, n) {
-			res[i] += carry;
-			carry = res[i] / 10;
-			res[i] %= 10;
-		}*/
-		return res;
-	}
-};
+
+void get_roots(bool f, int n, vector<complex<double>>& roots) {
+    const static double PI = acosl(-1);
+    forn(i, n / 2) {
+        double alpha = i * ((2 * PI) / n);
+        if (f) alpha = -alpha;
+        roots[i] = { cos(alpha), sin(alpha) };
+    }
+}
+template<typename T> void fft(vector<T>& a, bool f, int N, vector<int>& rev) {
+    forn(i, N) if (i < rev[i]) swap(a[i], a[rev[i]]);
+    int l, r, m;
+    vector<T> roots(N);
+    for (int n = 2; n <= N; n *= 2) {
+        get_roots(f, n, roots);
+        for (int pos = 0; pos < N; pos += n) {
+            l = pos + 0, r = pos + n / 2, m = 0;
+            while (m < n / 2) {
+                auto t = roots[m] * a[r];
+                a[r] = a[l] - t;
+                a[l] = a[l] + t;
+                l++, r++, m++;
+            }
+        }
+    }
+    if (f) {
+        auto invN = T(1) / T(N);
+        forn(i, N) a[i] = a[i] * invN;
+    }
+}
+
+template<typename T> vector<T> convolution(vector<T>& a, vector<T>& b) {
+    vector<T> l(all(a)), r(all(b));
+    int N = sz(l) + sz(r) - 1;
+    int n = 1, log_n = 0;
+    while (n <= N) n *= 2, log_n++;
+    vector<int> rev(n);
+    forn(i, n) {
+        rev[i] = 0;
+        forn(j, log_n) if (i >> j & 1) {
+            rev[i] |= 1 << (log_n - 1 - j);
+        }
+    }
+    assert(N <= n);
+    l.resize(n);
+    r.resize(n);
+    fft(l, false, n, rev);
+    fft(r, false, n, rev);
+    forn(i, n) l[i] *= r[i];
+    fft(l, true, n, rev);
+    l.resize(N);
+    return l;
+}
