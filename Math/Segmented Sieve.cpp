@@ -1,18 +1,21 @@
-vector<int> prime; // sqrt(MAX R)
+/*
+Math/Sieve.cpp
+*/
 
-vector<ll> segmented_criba(ll l, ll r) {
-    l = max(l, 2ll);
+#define int int64_t
+vector<int> segmented_criba(int l, int r) {
+    l = max<int>(l, 2ll);
     vector<bool> vis(r - l + 1);
     for (int& pp : prime) {
-        if ((ll)pp * pp > r) break;
-        ll mn = (l + pp - 1) / pp;
+        if ((int)pp * pp > r) break;
+        int mn = (l + pp - 1) / pp;
         if (mn == 1ll) mn++;
         mn *= pp;
-        for (ll i = mn; i <= r; i += pp) {
+        for (int i = mn; i <= r; i += pp) {
             vis[i - l] = true;
         }
     }
-    vector<ll> ans;
+    vector<int> ans;
     forn(i, sz(vis)) if (!vis[i]) ans.pb(l + i);
     return ans;
 }
