@@ -12,7 +12,7 @@ x == a (mod n)
 x == b (mod m)
 con gcd(n ,m) = 1, existe una solucion unica modulo K = n * m.
 a = residuo en [0,lcm)
-m = lcm de los módulos.
+m = lcm de los modulos.
 crt<int> c1(a, n), c2(b, m), sol = c1 * c2;
 */
 
