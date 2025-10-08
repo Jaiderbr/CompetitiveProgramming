@@ -1,34 +1,107 @@
-// corta poligono con la recta r dejando los puntos p tal que 
-// ccw(r.p, r.q, p)
-vector<pt> cut_polygon(vector<pt> v, line r) { // O(n)
-    vector<pt> ret;
-    for (int j = 0; j < v.size(); j++) {
-        if (ccw(r.p, r.q, v[j])) ret.push_back(v[j]);
-        if (v.size() == 1) continue;
-        line s(v[j], v[(j + 1) % v.size()]);
-        pt p = inter(r, s);
-        if (isinseg(p, s)) ret.push_back(p);
+//Tomado y adaptado de: https://github.com/brunomaletta/Biblioteca/blob/master/Codigo/Primitivas/geometriaInt.cpp
+
+#define sq(x) ((x)*(ll)(x))
+
+struct pt { // punto
+    int x, y;
+    pt(int x_ = 0, int y_ = 0) : x(x_), y(y_) {}
+    bool operator < (const pt p) const {
+        if (x != p.x) return x < p.x;
+        return y < p.y;
     }
-    ret.erase(unique(ret.begin(), ret.end()), ret.end());
-    if (ret.size() > 1 and ret.back() == ret[0]) ret.pop_back();
-    return ret;
+    bool operator == (const pt p) const {
+        return x == p.x and y == p.y;
+    }
+    pt operator + (const pt p) const { return pt(x + p.x, y + p.y); }
+    pt operator - (const pt p) const { return pt(x - p.x, y - p.y); }
+    pt operator * (const int c) const { return pt(x * c, y * c); }
+    ll operator * (const pt p) const { return x * (ll)p.x + y * (ll)p.y; }
+    ll operator ^ (const pt p) const { return x * (ll)p.y - y * (ll)p.x; }
+    friend istream& operator >> (istream& in, pt& p) {
+        return in >> p.x >> p.y;
+    }
+};
+
+struct line { // recta
+    pt p, q;
+    line() {}
+    line(pt p_, pt q_) : p(p_), q(q_) {}
+    friend istream& operator >> (istream& in, line& r) {
+        return in >> r.p >> r.q;
+    }
+};
+
+// PONTO & VETOR
+
+ll dist2(pt p, pt q) { // cuadrado de la distancia
+    return sq(p.x - q.x) + sq(p.y - q.y);
 }
 
-// distancia entre los rectangulos a y b (lados paralelos a los ejes)
+ll sarea2(pt p, pt q, pt r) { // 2 * area con signo
+    return (q - p) ^ (r - q);
+}
+
+bool col(pt p, pt q, pt r) { // si p, q y r son colineales
+    return sarea2(p, q, r) == 0;
+}
+
+bool ccw(pt p, pt q, pt r) { // si p, q, r estan en sentido antihorario
+    return sarea2(p, q, r) > 0;
+}
+
+int quad(pt p) { // cuadrante de un punto
+    return (p.x < 0) ^ 3 * (p.y < 0);
+}
+
+bool compare_angle(pt p, pt q) { // retorna si ang(p) < ang(q)
+    if (quad(p) != quad(q)) return quad(p) < quad(q);
+    return ccw(q, pt(0, 0), p);
+}
+
+pt rotate90(pt p) { // rota 90 grados
+    return pt(-p.y, p.x);
+}
+
+// RETA
+
+bool isinseg(pt p, line r) { // si p pertenece al segmento de r
+    pt a = r.p - p, b = r.q - p;
+    return (a ^ b) == 0 and (a * b) <= 0;
+}
+
+bool interseg(line r, line s) { // si el segmento de r intersecta el segmento de s
+    if (isinseg(r.p, s) or isinseg(r.q, s)
+        or isinseg(s.p, r) or isinseg(s.q, r)) return 1;
+
+    return ccw(r.p, r.q, s.p) != ccw(r.p, r.q, s.q) and
+        ccw(s.p, s.q, r.p) != ccw(s.p, s.q, r.q);
+}
+
+int segpoints(line r) { // numero de puntos enteros en el segmento
+    return 1 + __gcd(abs(r.p.x - r.q.x), abs(r.p.y - r.q.y));
+}
+
+double get_t(pt v, line r) { // retorna t tal que t*v pertenece a la recta r
+    return (r.p ^ r.q) / (double)((r.p - r.q) ^ v);
+}
+
+// POLIGONO
+
+// cuadrado de la distancia entre los rectangulos a y b (lados paralelos a los ejes)
 // asume que esta representado (inferior izquierdo, superior derecho)
-ld dist_rect(pair<pt, pt> a, pair<pt, pt> b) {
-    ld hor = 0, vert = 0;
+ll dist2_rect(pair<pt, pt> a, pair<pt, pt> b) {
+    int hor = 0, vert = 0;
     if (a.second.x < b.first.x) hor = b.first.x - a.second.x;
     else if (b.second.x < a.first.x) hor = a.first.x - b.second.x;
     if (a.second.y < b.first.y) vert = b.first.y - a.second.y;
     else if (b.second.y < a.first.y) vert = a.first.y - b.second.y;
-    return dist(pt(0, 0), pt(hor, vert));
+    return sq(hor) + sq(vert);
 }
 
-ld polarea(vector<pt> v) { // area del poligono
-    ld ret = 0;
+ll polarea2(vector<pt> v) { // 2 * area del poligono
+    ll ret = 0;
     for (int i = 0; i < v.size(); i++)
-        ret += sarea(pt(0, 0), v[i], v[(i + 1) % v.size()]);
+        ret += sarea2(pt(0, 0), v[i], v[(i + 1) % v.size()]);
     return abs(ret);
 }
 
@@ -39,37 +112,17 @@ int inpol(vector<pt>& v, pt p) { // O(n)
     for (int i = 0; i < v.size(); i++) {
         if (p == v[i]) return 2;
         int j = (i + 1) % v.size();
-        if (eq(p.y, v[i].y) and eq(p.y, v[j].y)) {
-            if ((v[i] - p) * (v[j] - p) < eps) return 2;
+        if (p.y == v[i].y and p.y == v[j].y) {
+            if ((v[i] - p) * (v[j] - p) <= 0) return 2;
             continue;
         }
-        bool abajo = v[i].y + eps < p.y;
-        if (abajo == (v[j].y + eps < p.y)) continue;
+        bool abajo = v[i].y < p.y;
+        if (abajo == (v[j].y < p.y)) continue;
         auto t = (p - v[i]) ^ (v[j] - v[i]);
-        if (eq(t, 0)) return 2;
-        if (abajo == (t > eps)) qt += abajo ? 1 : -1;
+        if (!t) return 2;
+        if (abajo == (t > 0)) qt += abajo ? 1 : -1;
     }
     return qt != 0;
-}
-
-bool interpol(vector<pt> v1, vector<pt> v2) { // si dos poligonos se intersectan - O(n*m)
-    int n = v1.size(), m = v2.size();
-    for (int i = 0; i < n; i++) if (inpol(v2, v1[i])) return 1;
-    for (int i = 0; i < n; i++) if (inpol(v1, v2[i])) return 1;
-    for (int i = 0; i < n; i++) for (int j = 0; j < m; j++)
-        if (interseg(line(v1[i], v1[(i + 1) % n]), line(v2[j], v2[(j + 1) % m]))) return 1;
-    return 0;
-}
-
-ld distpol(vector<pt> v1, vector<pt> v2) { // distancia entre poligonos
-    if (interpol(v1, v2)) return 0;
-
-    ld ret = DINF;
-
-    for (int i = 0; i < v1.size(); i++) for (int j = 0; j < v2.size(); j++)
-        ret = min(ret, distseg(line(v1[i], v1[(i + 1) % v1.size()]),
-            line(v2[j], v2[(j + 1) % v2.size()])));
-    return ret;
 }
 
 vector<pt> convex_hull(vector<pt> v) { // envolvente convexa - O(n log(n))
@@ -90,6 +143,13 @@ vector<pt> convex_hull(vector<pt> v) { // envolvente convexa - O(n log(n))
     l.pop_back(); u.pop_back();
     for (pt i : u) l.push_back(i);
     return l;
+}
+
+ll interior_points(vector<pt> v) { // puntos enteros dentro de un poligono simple
+    ll b = 0;
+    for (int i = 0; i < v.size(); i++)
+        b += segpoints(line(v[i], v[(i + 1) % v.size()])) - 1;
+    return (polarea2(v) - b) / 2 + 1;
 }
 
 struct convex_pol {
@@ -146,44 +206,11 @@ struct convex_pol {
     }
 };
 
-// CIRCUNFERENCIA
-
-pt getcenter(pt a, pt b, pt c) { // centro de la circunf dado 3 puntos
-    b = (a + b) / 2;
-    c = (a + c) / 2;
-    return inter(line(b, b + rotate90(a - b)),
-        line(c, c + rotate90(a - c)));
-}
-
-vector<pt> circ_line_inter(pt a, pt b, pt c, ld r) { // interseccion de la circunf (c, r) y recta ab
-    vector<pt> ret;
-    b = b - a, a = a - c;
-    ld A = b * b;
-    ld B = a * b;
-    ld C = a * a - r * r;
-    ld D = B * B - A * C;
-    if (D < -eps) return ret;
-    ret.push_back(c + a + b * (-B + sqrt(D + eps)) / A);
-    if (D > eps) ret.push_back(c + a + b * (-B - sqrt(D)) / A);
-    return ret;
-}
-
-vector<pt> circ_inter(pt a, pt b, ld r, ld R) { // interseccion de la circunf (a, r) y (b, R)
-    vector<pt> ret;
-    ld d = dist(a, b);
-    if (d > r + R or d + min(r, R) < max(r, R)) return ret;
-    ld x = (d * d - R * R + r * r) / (2 * d);
-    ld y = sqrt(r * r - x * x);
-    pt v = (b - a) / d;
-    ret.push_back(a + v * x + rotate90(v) * y);
-    if (y > 0) ret.push_back(a + v * x - rotate90(v) * y);
-    return ret;
-}
-
 bool operator <(const line& a, const line& b) { // comparador para recta
     // asume que las rectas tienen p < q
     pt v1 = a.q - a.p, v2 = b.q - b.p;
-    if (!eq(angle(v1), angle(v2))) return angle(v1) < angle(v2);
+    bool b1 = compare_angle(v1, v2), b2 = compare_angle(v2, v1);
+    if (b1 or b2) return b1;
     return ccw(a.p, a.q, b.p); // mismo angulo
 }
 bool operator ==(const line& a, const line& b) {
@@ -195,7 +222,7 @@ struct cmp_sweepline {
     bool operator () (const line& a, const line& b) const {
         // asume que los segmentos tienen p < q
         if (a.p == b.p) return ccw(a.p, a.q, b.q);
-        if (!eq(a.p.x, a.q.x) and (eq(b.p.x, b.q.x) or a.p.x + eps < b.p.x))
+        if (a.p.x != a.q.x and (b.p.x == b.q.x or a.p.x < b.p.x))
             return ccw(a.p, a.q, b.p);
         return ccw(a.p, b.q, b.p);
     }
@@ -205,6 +232,6 @@ struct cmp_sweepline {
 pt dir;
 struct cmp_sweepangle {
     bool operator () (const line& a, const line& b) const {
-        return get_t(dir, a) + eps < get_t(dir, b);
+        return get_t(dir, a) < get_t(dir, b);
     }
 };
