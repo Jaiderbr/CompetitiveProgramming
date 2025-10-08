@@ -6,7 +6,7 @@ t(0)=1
 t(1)=2
 t(2)=3
 
-t(n)=3t(n-1)+2t(n-2)+t(n-3)+3 for n≥3
+t(n)=3t(n-1)+2t(n-2)+t(n-3)+3 for n>=3
 */
 
 const int MOD = 1e9 + 7;

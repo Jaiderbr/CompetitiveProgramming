@@ -3,7 +3,7 @@
 - `Blossom.cpp`: algoritmo de Blossom para emparejamientos maximos en grafos generales.
 - `Dinic.cpp`: implementacion de Dinic para max flow en grafos dirigidos.
 - `Hopcroft Karp.cpp`: emparejamiento maximo en grafos bipartitos (Hopcroft-Karp).
-- `Hungarian.cpp`: algoritmo húngaro para assignment / matching completo con costo minimo.
+- `Hungarian.cpp`: algoritmo hungaro para assignment / matching completo con costo minimo.
 - `Matching.cpp`: implementaciones varias de matching en grafos.
 - `Maximum flow minimum cost.cpp`: max flow con costo minimo (MinCostMaxFlow).
 
