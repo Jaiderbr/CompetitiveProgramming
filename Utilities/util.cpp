@@ -15,27 +15,27 @@ x && (!(x& (x - 1)));  // Comprueba si x es una potencia de 2.
 
 //Rotar una matriz 90 grados
 vector<vector<int>> rotar(vector<vector<int>>& a) {
-  int n = sz(a), m = sz(a[0]);
-  vector<vector<int>> v(m, vector<int>(n));
-  forn(i, n) {
-    forn(j, m) {
-      v[j][n - 1 - i] = a[i][j];
+    int n = sz(a), m = sz(a[0]);
+    vector<vector<int>> v(m, vector<int>(n));
+    forn(i, n) {
+        forn(j, m) {
+            v[j][n - 1 - i] = a[i][j];
+        }
     }
-  }
-  return v;
+    return v;
 }
 
 //1234567891011121314151617... what is the digit at position n?
 char digit_at_pos(int n) {
-  n--; // 0 index
-  int len = 9, mm = 1;
-  forne(i, 1, 32) { // change 32 to 64 if needed
-    if (n < len) {
-      int num = n / i + mm, pos = n % i;
-      return to_string(num)[pos];
+    n--; // 0 index
+    int len = 9, mm = 1;
+    forne(i, 1, 32) { // change 32 to 64 if needed
+        if (n < len) {
+            int num = n / i + mm, pos = n % i;
+            return to_string(num)[pos];
+        }
+        n -= len, mm *= 10, len = 9 * mm * (i + 1);
     }
-    n -= len, mm *= 10, len = 9 * mm * (i + 1);
-  }
 }
 
 // sum of even or odd numbers from l to r
@@ -44,49 +44,49 @@ auto odd = [&](int l, int r) { return (r * (r + 1) / 2) - ((l - 1) * ((l - 1) + 
 
 // > need
 auto upper_bound = [&](int need) ->int {
-  int l = -1, r = n;
-  while (r - l > 1) {
-    int mid = l + (r - l) / 2;
-    if (nums[mid] <= need) l = mid;
-    else r = mid;
-  }
-  return l;
-  };
+    int l = -1, r = n;
+    while (r - l > 1) {
+        int mid = l + (r - l) / 2;
+        if (nums[mid] <= need) l = mid;
+        else r = mid;
+    }
+    return l;
+    };
 // >= need
 auto lower_bound = [&](int need) ->int {
-  int l = -1, r = n;
-  while (r - l > 1) {
-    int mid = l + (r - l) / 2;
-    if (nums[mid] < need) l = mid;
-    else r = mid;
-  }
-  return r;
-  };
+    int l = -1, r = n;
+    while (r - l > 1) {
+        int mid = l + (r - l) / 2;
+        if (nums[mid] < need) l = mid;
+        else r = mid;
+    }
+    return r;
+    };
 // == need
 auto search = [&](int need) ->bool {
-  int l = -1, r = n;
-  while (r - l > 1) {
-    int mid = l + (r - l) / 2;
-    if (nums[mid] < need) l = mid;
-    else r = mid;
-  }
-  return nums[r] == need;
-  };
+    int l = -1, r = n;
+    while (r - l > 1) {
+        int mid = l + (r - l) / 2;
+        if (nums[mid] < need) l = mid;
+        else r = mid;
+    }
+    return nums[r] == need;
+    };
 
 // xor sum from 0 to x
 int xorsum(int x) {
-  if (x % 4 == 0) return x;
-  else if (x % 4 == 2) return x + 1;
-  else if (x % 4 == 1) return 1;
-  else return 0;
+    if (x % 4 == 0) return x;
+    else if (x % 4 == 2) return x + 1;
+    else if (x % 4 == 1) return 1;
+    else return 0;
 };
 
 /* resultado de & en el rango [l, r] */
-ll rangeAND(ll l, ll r) {
-  ll ans = 0;
-  rforn(i, 63) {
-    if ((l & (1ll << i)) != (r & (1ll << i))) break;
-    ans |= (l & (1ll << i));
-  }
-  return ans;
+int rangeAND(int l, int r) {
+    int ans = 0;
+    for (int i = 63 - 1; i >= 0; i--) {
+        if ((l & (1ll << i)) != (r & (1ll << i))) break;
+        ans |= (l & (1ll << i));
+    }
+    return ans;
 }
