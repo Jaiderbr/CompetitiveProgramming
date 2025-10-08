@@ -1,34 +1,14 @@
 /*
 Dado un string s y n strings t, se pide eliminar todas las ocurrencias de los strings t en s.
 https://usaco.guide/adv/string-search/#problem-usaco-533
+begintheescapexecutionatthebreakofdawn
+2
+escape
+execution
+----------
+beginthatthebreakofdawn
 */
 
-#include <bits/stdc++.h>
-using namespace std;
-#define endl     '\n' 
-#define f        first
-#define s        second
-#define ins      insert
-#define pb       push_back
-#define eb       emplace_back
-#define sz(x)    int((x).size())
-#define all(x)   begin(x), end(x)
-typedef long long ll;
-typedef unsigned long long ull;
-#define forn(i, n) for (int i = 0; i < n; ++i)
-#define each(i, x) for (auto &&i : x)
-#define forne(i,x,n) for (int i = x; i < n; ++i)
-#define show(x) for (auto &&i : x) {cout << i;} cerr<< endl;
-
-
-void dbg_out() { cerr << ']' << endl; }
-template<typename Head, typename... Tail>
-void dbg_out(Head H, Tail... T) { cerr << H;if (sizeof...(T)) cerr << ',' << ' '; dbg_out(T...); }
-#ifdef LOCAL 
-#define dbg(...) cerr << '|' << __LINE__ << '|'<< '{' << #__VA_ARGS__ << '}'<<':'<<' '<<'[', dbg_out(__VA_ARGS__)
-#else
-#define dbg(...)
-#endif
 
 /*
 Usage:
@@ -51,7 +31,7 @@ void pre(int c, int mod) {
 }
 
 struct Hash {
-    #warning llamar pre;
+#warning llamar pre;
     ll c, mod;
     vector<int> h;
     Hash(const string s, const int c, const int mod) : c(c), mod(mod), h(sz(s) + 1) {
