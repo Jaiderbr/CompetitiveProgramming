@@ -22,6 +22,9 @@
 // x = x & (x-1)          -> Apaga el bit encendido mas a la derecha
 // x = x & ~y             -> Apaga en x los bits encendidos de y
 
+// elementos unicos 
+sort(all(nums));
+nums.resize(unique(all(nums)) - nums.begin());
 
 //Rotar una matriz 90 grados
 vector<vector<int>> rotar(vector<vector<int>>& a) {
