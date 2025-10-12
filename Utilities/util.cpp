@@ -1,17 +1,27 @@
-__builtin_popcount(x);  // Cuenta el numero de bits '1' en la representacion binaria de x.
-__builtin_parity(x);    // Devuelve 1 si el numero de bits '1' en la representacion binaria de x es impar, 0 si es par.
-__builtin_clz(x);       // Cuenta el numero de bits en '0' a la izquierda, desde el bit mas significativo hasta el primer '1'.
-__builtin_ctz(x);       // Cuenta el numero de bits en '0' a la derecha, desde el bit menos significativo hasta el primer '1'.
-__builtin_ffs(x);       // Encuentra la posicion del primer bit en '1' (contando desde 1, desde el bit menos significativo).
-__lg(x);                // Devuelve el logaritmo en base 2
-n & ~(1 << (x - 1));    // Apaga el m-esimo bit de n (bit 1 si m=1 es el menos significativo), Si m=1, apaga el bit menos significativo.
-x& (-x);                // Aisla el bit menos significativo en '1' de x (devuelve el bit mas bajo en '1' de x).
-~x & (x + 1);           // Aisla el bit menos significativo en '0' de x.
-x | (x + 1);            // Enciende el bit menos significativo en '0' de x.
-x& (x - 1);             // Apaga el bit menos significativo en '1' de x.
--~n;                    // Suma 1 a n. 
-~- n;                   // Resta 1 a n.
-x && (!(x& (x - 1)));  // Comprueba si x es una potencia de 2. 
+//__builtin_popcount(x);  -> Cuenta el numero de bits '1' en la representacion binaria de x.
+//__builtin_parity(x);    -> Devuelve 1 si el numero de bits '1' en la representacion binaria de x es impar, 0 si es par.
+//__builtin_clz(x);       -> Cuenta el numero de bits en '0' a la izquierda, desde el bit mas significativo hasta el primer '1'.
+//__builtin_ctz(x);       -> Cuenta el numero de bits en '0' a la derecha, desde el bit menos significativo hasta el primer '1'.
+//__builtin_ffs(x);       -> Encuentra la posicion del primer bit en '1' (contando desde 1, desde el bit menos significativo).
+//__lg(x);                -> Devuelve el logaritmo en base 2
+//__builtin_bswap32(x);   -> Intercambia los bytes de un entero de 32 bits.
+//__builtin_bswap64(x);   -> Intercambia los bytes de un entero de 64 bits.
+// x ^ (1 << (x & -x));   -> Invierte el bit menos significativo en '1' de x.
+//n & ~(1 << (x - 1));    -> Apaga el m-esimo bit de n (bit 1 si m=1 es el menos significativo), Si m=1, apaga el bit menos significativo.
+//-~n;                    -> Suma 1 a n.
+//~- n;                   -> Resta 1 a n.
+//x && (!(x & (x - 1)));  -> Comprueba si x es una potencia de 2.
+// x & (1<<i)             -> Verifica si el i-esimo bit esta encendido
+// x = x | (1<<i)         -> Enciende el i-esimo bit
+// x = x & ~(1<<i)        -> Apaga el i-esimo bit
+// x = x ^ (1<<i)         -> Invierte el i-esimo bit
+// x = ~x                 -> Invierte todos los bits
+// x & -x                 -> Devuelve el bit encendido mas a la derecha (potencia de 2, no el indice)
+// ~x & (x+1)             -> Devuelve el bit apagado mas a la derecha (potencia de 2, no el indice)
+// x = x | (x+1)          -> Enciende el bit apagado mas a la derecha
+// x = x & (x-1)          -> Apaga el bit encendido mas a la derecha
+// x = x & ~y             -> Apaga en x los bits encendidos de y
+
 
 //Rotar una matriz 90 grados
 vector<vector<int>> rotar(vector<vector<int>>& a) {
