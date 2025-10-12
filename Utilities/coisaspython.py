@@ -103,7 +103,7 @@ for p in permutations(nums):
 for c in combinations(nums, 2):
     pass
 
-for p in product([0,1], repeat=3): #todas combinaciones con repetición de los elementos [0, 1], tomando 3 posiciones.
+for p in product([0,1], repeat=3): #todas combinaciones con repeticion de los elementos [0, 1], tomando 3 posiciones.
     pass #(0,0,0), (0,0,1), (0,1,0), (0,1,1), (1,0,0), (1,0,1), (1,1,0), (1,1,1)
 
 #Salida rapida de muchas lineas
