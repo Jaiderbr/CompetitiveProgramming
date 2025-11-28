@@ -1,70 +1,78 @@
-struct mbm { // O(E * sqrt(V))
-    int nl, nr, flow = 0;
-    vector<vector<int>> g;
-    vector<int> dist, mfl, mfr;
+struct HPTK {
+    int nL, nR;
+    vector<vector<int>> adj;
+    vector<int> mL, mR, dist;
 
-    mbm(int nl, int nr) :
-        nl(nl), nr(nr), g(nl), mfl(nl, -1),
-        mfr(nr, -1), dist(nl) {
+    const int INF = 1000000007;
+
+    HPTK(int nLeft_, int nRight_) {
+        nL = nLeft_, nR = nRight_;
+        adj.assign(nL, {});
+        mL.assign(nL, -1);
+        mR.assign(nR, -1);
+        dist.assign(nL, 0);
     }
 
-    void add(int u, int v) { g[u].pb(v); }
-
-    void bfs() {
+    void add(int u, int v) { adj[u].pb(v); }
+    bool bfs() {
         queue<int> q;
-        forn(u, nl)
-            if (!~mfl[u]) q.push(u), dist[u] = 0;
-            else dist[u] = -1;
-        while (sz(q)) {
-            int u = q.front();
-            q.pop();
-            for (auto& v : g[u])
-                if (~mfr[v] && !~dist[mfr[v]]) {
-                    dist[mfr[v]] = dist[u] + 1;
-                    q.push(mfr[v]);
-                }
+        for (int u = 0; u < nL; u++) {
+            if (mL[u] == -1) {
+                dist[u] = 0;
+                q.push(u);
+            }
+            else dist[u] = INF;
         }
+        bool f = 0;
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            if (dist[u] >= INF) continue;
+            for (int v : adj[u]) {
+                int u2 = mR[v];
+                if (u2 != -1) {
+                    if (dist[u2] == INF) {
+                        dist[u2] = dist[u] + 1;
+                        q.push(u2);
+                    }
+                }
+                else f = 1;
+            }
+        }
+        return f;
     }
 
     bool dfs(int u) {
-        for (auto& v : g[u])
-            if (!~mfr[v]) {
-                mfl[u] = v, mfr[v] = u;
-                return true;
+        for (int v : adj[u]) {
+            int u2 = mR[v];
+            if (u2 == -1 || (dist[u2] == dist[u] + 1 && dfs(u2))) {
+                mL[u] = v; mR[v] = u;
+                return 1;
             }
-        for (auto& v : g[u])
-            if (dist[mfr[v]] == dist[u] + 1 && dfs(mfr[v])) {
-                mfl[u] = v, mfr[v] = u;
-                return true;
-            }
-        return false;
-    }
-
-    int get_matching() {
-        while (true) {
-            bfs();
-            int agt = 0;
-            forn(u, nl)
-                if (!~mfl[u]) agt += dfs(u);
-            if (!agt) break;
-            flow += agt;
         }
-        return flow;
+        dist[u] = INF;
+        return 0;
     }
 
-    pair<vector<int>, vector<int>> MVC() {
-        vector<int> L, R;
-        forn(u, nl)
-            if (!~dist[u]) L.pb(u);
-            else if (~mfl[u]) R.pb(mfl[u]);
-        return { L, R };
+    int maxMatching() {
+        int m = 0;
+        while (bfs()) {
+            for (int u = 0; u < nL; u++) {
+                if (mL[u] == -1) {
+                    if (dfs(u)) m++;
+                }
+            }
+        }
+        return m;
     }
 
-    vector<pair<int,int>> get_edges() {
-        vector<pair<int,int>> ans;
-        forn(u, nl)
-            if (mfl[u] != -1)
-                ans.pb({ u, mfl[u] });
-        return ans;
+    vector<pair<int, int>> getMatchingEdges() {
+        vector<pair<int, int>> res;
+        for (int u = 0; u < nL; u++) {
+            if (mL[u] != -1) {
+                res.pb({ u, mL[u] });
+            }
+        }
+        return res;
     }
+
 };
