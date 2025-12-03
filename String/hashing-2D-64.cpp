@@ -78,3 +78,6 @@ struct Hash2D {
     x2,y1  ---------- x2,y2
     */
 };
+
+int Hash2D::P = rnd(256, MOD - 1);
+int Hash2D::Q = rnd(256, MOD - 1);
