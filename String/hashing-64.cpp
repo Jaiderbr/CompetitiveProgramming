@@ -30,3 +30,9 @@ struct Hash {
 };
 
 int Hash::P = rnd(256, MOD - 1);
+
+bool same(Hash& Ha, Hash& Hb, int l, int r) {
+    int qa = Ha.get(l, r);
+    int qb = Hb.get(sz(Hb.h) - 1 - r, sz(Hb.h) - 1 - l);
+    return qa == qb;
+}
