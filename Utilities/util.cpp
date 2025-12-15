@@ -103,3 +103,51 @@ int rangeAND(int l, int r) {
     }
     return ans;
 }
+
+/*Palindrome check with hash*/
+auto checkOdd = [&](int mid, int pr = 0) -> bool {
+    forne(i, mid, n - mid) {
+        if (same(ha, hr, i - mid, i + mid)) {
+            if (pr) forne(j, i - mid, i + mid + 1) cout << s[j];
+            return 1;
+        }
+    }
+    return 0;
+    };
+auto getOdd = [&]()-> int {
+    int l = 0, r = n / 2 + 1;
+    while (r - l > 1) {
+        int mid = l + (r - l) / 2;
+        if (checkOdd(mid)) l = mid;
+        else r = mid;
+    }
+    return l;
+    };
+
+auto checkEven = [&](int mid, int pr = 0) -> bool {
+    if (mid == 0) return 1;
+    forne(i, mid, n - mid + 1) {
+        if (same(ha, hr, i - mid, i + mid - 1)) {
+            if (pr) forne(j, i - mid, i + mid) cout << s[j];
+            return 1;
+        }
+    }
+    return 0;
+    };
+
+auto getEven = [&]()-> int {
+    int l = 0, r = n / 2 + 1;
+    while (r - l > 1) {
+        int mid = l + (r - l) / 2;
+        if (checkEven(mid)) l = mid;
+        else r = mid;
+    }
+    return l;
+    };
+
+int even = getEven();
+int odd = getOdd();
+
+if (even > odd + 1) checkEven(even, 1);
+else checkOdd(odd, 1);
+
