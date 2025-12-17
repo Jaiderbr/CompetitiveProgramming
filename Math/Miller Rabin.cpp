@@ -1,25 +1,36 @@
-bool probably_prime(ll n, ll a, ll d, int s){
-    ll x = binpow(a, d, n);
-    if(x == 1 || x+1 == n) return true;
-    forn(r, s){
-        x = mulmod(x,x,n);
-        if(x == 1) return false;
-        if(x+1 == n) return true;
-    }
-    return false;
+/*
+Comprueba si n es primo, n <= 3 * 10^18
+o(log(n)
+
+*/
+
+#define int int64_t
+
+int mul(int a, int b, int m) {
+    int ret = a * b - int((long double)1 / m * a * b + 0.5) * m;
+    return ret < 0 ? ret + m : ret;
 }
 
-bool miller_rabin(ll n){//check (n is prime)?
-    if(n < 2) return false;
-    const int a[] = {2,3,5,7,11,13,17,19,23};
-    int s = -1;
-    ll d = n-1;
-    while(!d&1) d >>= 1, s++;
+int pow(int x, int y, int m) {
+    if (!y) return 1;
+    int ans = pow(mul(x, x, m), y / 2, m);
+    return y % 2 ? mul(x, ans, m) : ans;
+}
 
-    forn(i, 9){
-        if(n == a[i]) return true;
-        if(!probably_prime(n, a[i], d, s))
-            return false;
+bool prime(int n) {
+    if (n < 2) return 0;
+    if (n <= 3) return 1;
+    if (n % 2 == 0) return 0;
+    int r = __builtin_ctzll(n - 1), d = n >> r;
+
+    for (int a : {2, 325, 9375, 28178, 450775, 9780504, 1795265022}) {
+        int x = pow(a, d, n);
+        if (x == 1 or x == n - 1 or a % n == 0) continue;
+        for (int j = 0; j < r - 1; j++) {
+            x = mul(x, x, n);
+            if (x == n - 1) break;
+        }
+        if (x != n - 1) return 0;
     }
-    return true;
+    return 1;
 }
