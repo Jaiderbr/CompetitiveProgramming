@@ -93,3 +93,37 @@ int dis_substr(const string& s, const vector<int>& sa, const vector<int>& lcp) {
     forn(i, n) ans += n - sa[i] - lcp[i];
     return ans;
 }
+
+/*
+Se llama subsecuencia "Refrain" si el producto de su longitud y 
+el numero de ocurrencias en la matriz es el máximo posible.
+
+ejmplo:
+8 3
+1 2 1 2 1 1 2 1
+Output:
+9
+3
+1 2 1
+*/
+pair<int, string> findRefrain(const string& s, const vector<int>& lcp, const vector<int>& suffix) {
+    stack<int> monoStack;
+    const int n = sz(lcp);
+    int maxArea = sz(s);
+    string res = s;
+    forn(i, n + 1) {
+        int x = (i == n ? 0 : lcp[i]);
+        while (!monoStack.empty() && lcp[monoStack.top()] > x) {
+            int tp = monoStack.top();
+            monoStack.pop();
+            int h = lcp[tp], w = (monoStack.empty() ? i : i - 1 - monoStack.top());
+            int area = h * (w + 1);
+            if (area > maxArea) {
+                maxArea = area;
+                res = s.substr(suffix[i - w], h);
+            }
+        }
+        monoStack.push(i);
+    }
+    return { maxArea, res };
+}
