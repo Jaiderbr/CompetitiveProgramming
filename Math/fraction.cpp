@@ -30,7 +30,9 @@ struct fraction {
     fraction operator / (const fraction& x) const {
         return fraction(num * x.den, den * x.num);
     }
-    friend ostream& operator << (ostream& os, const fraction& x) {
-        return os << x.num << " / " << x.den;
-    }
+    friend ostream& operator << (ostream& os, const fraction& x) {        
+        if (x.den == 1) return os << x.num;
+        if (x.num / x.den != 0) return os << x.num / x.den << " " << x.num % x.den << "/" << x.den;
+        return os << x.num << "/" << x.den;
+    }    
 };
