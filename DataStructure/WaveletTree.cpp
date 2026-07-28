@@ -1,3 +1,8 @@
+/*
+vector<int> orig = nums; // sacar una copia si se necesita trabajar con los valores reales, wavelet tree reordena
+WaveletTree wt(nums.begin(), nums.end(), *min_element(all(nums)), *max_element(all(nums))); //construir ( consultas en 1-idx)
+*/
+
 struct WaveletTree {
     int lo, hi;
     WaveletTree* left = nullptr, * right = nullptr;
