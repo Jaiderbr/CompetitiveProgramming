@@ -3,20 +3,9 @@ struct COO_COMPRESS {
     vector<T> nums;
     bool is_compress = true;
 
-    int size() {
-        if (!is_compress) compress();
-        return sz(nums);
-    }
-
-    void clear() {
-        nums.clear();
-        is_compress = true;
-    }
-
-    void insert(T x) {
-        nums.pb(x);
-        is_compress = false;
-    }
+    int size() { if (!is_compress) compress(); return sz(nums); }
+    void clear() { nums.clear(); is_compress = true; }
+    void insert(T x) { nums.pb(x); is_compress = false; }
 
     void compress() {
         sort(all(nums));
