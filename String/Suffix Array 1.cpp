@@ -96,7 +96,7 @@ int dis_substr(const string& s, const vector<int>& sa, const vector<int>& lcp) {
 
 /*
 Se llama subsecuencia "Refrain" si el producto de su longitud y 
-el numero de ocurrencias en la matriz es el máximo posible.
+el numero de ocurrencias en la matriz es el maximo posible.
 
 ejmplo:
 8 3
