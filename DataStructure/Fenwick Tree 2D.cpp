@@ -1,6 +1,6 @@
 /*
 Debes construirlo con un vector que contenga todos los puntos
-que quieres actualizar algún día (los puntos que llamarás actualización)
+que quieres actualizar algun dia (los puntos que llamaras actualizacion)
 */
 
 template<class T = int> struct bit2d {
